@@ -1,62 +1,59 @@
-import React, { lazy, useCallback, useContext, useEffect, useState } from 'react'
-import { camelCase, every, isEmpty, omit, omitBy } from 'lodash'
+import React, { Fragment, lazy, useCallback, useContext, useEffect, useState } from 'react'
 
 import ComponentsContext from './contexts/ComponentsContext'
-import api from './api'
 import componentMap from './components'
+import { isEmpty } from 'lodash'
 
-export function useComponents () {
-  const [components, setComponents] = useState()
+// eslint-disable-next-line
+const worker = new Worker('./firebase.worker.js')
+
+export function usePages (client = 'Default') {
+  const cached = window.localStorage.getItem(client)
+  const [pages, setPages] = useState(cached ? JSON.parse(cached) : undefined)
   useEffect(() => {
-    const unusedProperties = ['description', 'type', 'component', 'category']
-    api.components()
-      .on('value', snapshot => {
-        const components = snapshot.val()
-        const formattedComponets = Object.keys(components)
-          .reduce((accum, component) => ({
-            ...accum, // convert components object to camelCasing
-            [camelCase(component)]: {
-              ...omit(omitBy(components[component], isEmpty), unusedProperties)
-            }
-          }), {})
-        setComponents(formattedComponets)
-      })
+    const action = 'pages'
+    worker.postMessage({ action, client })
+    const listener = worker.addEventListener('message', event => {
+      if (event.data.action === action) {
+        setPages(JSON.parse(event.data.value))
+        window.requestIdleCallback(() => window.localStorage.setItem(client, event.data.value))
+      }
+    })
+    return () => worker.removeEventListener('message', listener)
   }, [])
+  return pages
+}
 
+// subscribe to the list of spreadsheet components
+export function useComponents () {
+  const action = 'components'
+  const cached = window.localStorage.getItem(action)
+  const [components, setComponents] = useState(cached ? JSON.parse(cached) : undefined)
+  useEffect(() => {
+    worker.postMessage({ action })
+    const listener = worker.addEventListener('message', event => {
+      if (event.data.action === action) {
+        setComponents(JSON.parse(event.data.value))
+        window.requestIdleCallback(() => window.localStorage.setItem(action, event.data.value))
+      }
+    })
+    return () => worker.removeEventListener('message', listener)
+  }, [])
   return components
 }
 
-export function useComponent (componentName) {
+// use a component from the spreadsheet database
+export function useComponent () {
   const components = useContext(ComponentsContext)
-  return useCallback(() => {
-    if (isEmpty(components)) return null
+  return useCallback((componentName, key) => {
+    if (isEmpty(components) || isEmpty(componentName)) return null
     const props = components[componentName]
+    console.log(componentName)
     const componentFileName = componentName.replace(/^\w/, c => c.toUpperCase())
-    const Component = lazy(componentMap[componentFileName])
-    return <Component {...props} />
-  }, [components, componentName])
-}
-
-export function usePages (client = 'Default') {
-  const [pages, setPages] = useState()
-
-  useEffect(() => {
-    api.spreadsheet(client)
-      .on('value', snapshot =>
-        setPages(snapshot.val()
-          .filter(page => {
-            if (every(Object.values(page), isEmpty)) return false // filter out empty pages
-            return true
-          })
-          .map(page => {
-            if (isEmpty(page.components) === false) {
-              const rows = page.components.split('\n')
-              page.components = rows.map(row => row.split(',').map(camelCase)) // convert to camelCase to match mapped components
-            }
-            return page
-          })
-        ))
-  }, [])
-
-  return pages
+    if (componentFileName in componentMap) {
+      const Component = lazy(componentMap[componentFileName])
+      return <Component {...props} key={key} />
+    }
+    return <Fragment key={key}>{componentFileName}</Fragment>
+  }, [components])
 }
