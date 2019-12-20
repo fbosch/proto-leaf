@@ -3,6 +3,7 @@ import { useComponents, usePages } from './hooks'
 
 import { ComponentsProvider } from './contexts/ComponentsContext'
 import ErrorBoundary from './components/ErrorBoundary'
+import LoadingIndicator from './components/LoadingIndicator'
 import Page from './components/Page'
 import { PageProvider } from './contexts/PageContext'
 import React from 'react'
@@ -19,7 +20,7 @@ function App () {
         <ErrorBoundary>
           <Router>
             {isEmpty(pages)
-              ? 'loading'
+              ? <LoadingIndicator />
               : (
                 <Switch>
                   {rest.map(page => (

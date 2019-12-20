@@ -1,7 +1,9 @@
 @import "~modern-normalize";
+@import "./variables";
+@import "./mixins";
+@import "./animation";
 
 .wrapper {
-	background: peachpuff;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	grid-auto-rows: minmax(100px, auto);
@@ -19,6 +21,7 @@
 }
 
 main {
+	overflow: hidden;
 	grid-area: main;
 	max-width: 1200px;
 	width: 100%;
@@ -30,6 +33,9 @@ main {
 	display: flex;
 	justify-content: space-between;
 	width: 100%;
+	@include mobile {
+		flex-direction: column;
+	}
 }
 
 .footer {
@@ -39,4 +45,15 @@ main {
 
 .global-menu {
 	background: greenyellow;
+}
+
+.loader {
+	opacity: 0;
+	animation: fade-in 200ms linear 300ms;
+	animation-fill-mode: forwards;
+	color: green;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
 }

@@ -8,10 +8,11 @@ import { isEmpty } from 'lodash'
 
 // eslint-disable-next-line
 const worker = new Worker('./firebase.worker.js')
+const disableAllCaching = false
 
-export function usePages (client = 'Default') {
+export function usePages ({ client = 'Default', disableCache = disableAllCaching } = {}) {
   const cached = window.localStorage.getItem(client)
-  const initialValue = cached ? JSON.parse(cached) : undefined
+  const initialValue = cached && disableCache === false ? JSON.parse(cached) : undefined
   const [pages, setPages] = useState(initialValue)
   useEffect(() => {
     const action = 'pages'
@@ -28,10 +29,10 @@ export function usePages (client = 'Default') {
 }
 
 // subscribe to the list of spreadsheet components
-export function useComponents () {
+export function useComponents ({ disableCache = disableAllCaching } = {}) {
   const action = 'components'
   const cached = window.localStorage.getItem(action)
-  const initialValue = cached ? JSON.parse(cached) : undefined
+  const initialValue = cached && disableCache === false ? JSON.parse(cached) : undefined
   const [components, setComponents] = useState(initialValue)
   useEffect(() => {
     worker.postMessage({ action })

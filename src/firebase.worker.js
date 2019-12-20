@@ -33,7 +33,6 @@ function subscribeToComponents () {
   console.info('✔️ Subscribed to Components Spreadsheet')
   const componentsRef = database.ref(`/${spreadsheet}/Components`)
   const unusedProperties = ['description', 'component', 'category']
-
   componentsRef.on('value', snapshot => {
     const components = snapshot.val()
     if (!components) return

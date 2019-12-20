@@ -27,6 +27,7 @@
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
     "@babel/preset-react": "^7.7.4",
+    "@svgr/parcel-plugin-svgr": "^4.3.3",
     "babel-eslint": "^10.0.3",
     "babel-plugin-lodash": "^3.3.4",
     "babel-preset-react": "^6.24.1",
