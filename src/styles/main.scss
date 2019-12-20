@@ -1,0 +1,42 @@
+@import "~modern-normalize";
+
+.wrapper {
+	background: peachpuff;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-auto-rows: minmax(100px, auto);
+	grid-template-rows: auto 1fr;
+	min-height: 100vh;
+	grid-template-areas:
+		"head head head head"
+		"main main main main"
+		"foot foot foot foot";
+}
+
+.global-menu {
+	grid-area: head;
+	height: 50px;
+}
+
+main {
+	grid-area: main;
+	max-width: 1200px;
+	width: 100%;
+	padding: 30px;
+	margin: 0 auto;
+}
+
+.row {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.footer {
+	background: orange;
+	grid-area: foot;
+}
+
+.global-menu {
+	background: greenyellow;
+}

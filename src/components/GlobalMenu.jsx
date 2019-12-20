@@ -6,6 +6,8 @@ export default function GlobalMenu (props) {
   // const pages = useContext(PageContext)
   // console.log(props, pages)
   return (
-    <div>global menu: {JSON.stringify(props)}</div>
+    <div className='global-menu'>
+      global menu
+    </div>
   )
 }

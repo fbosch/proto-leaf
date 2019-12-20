@@ -13,7 +13,6 @@ function App () {
   const pages = usePages()
   const components = useComponents()
   const [homePage, ...rest] = pages || []
-  console.log(pages)
   return (
     <ComponentsProvider value={components}>
       <PageProvider value={pages}>
@@ -24,11 +23,11 @@ function App () {
               : (
                 <Switch>
                   {rest.map(page => (
-                    <Route path={`/${page.id}`} key={page.id}>
-                      <Page {...page} />
+                    <Route path={`/${page.id}`} key={page.id + page.name}>
+                      <Page {...page} key={page.name} />
                     </Route>
                   ))}
-                  <Route path='/'><Page {...homePage} key={homePage.id} /></Route>
+                  <Route path='/'><Page {...homePage} key={homePage.id + homePage.name} /></Route>
                 </Switch>
               )}
           </Router>
