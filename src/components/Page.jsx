@@ -43,7 +43,11 @@ export default function Page (props) {
         <Suspense fallback=''>
           {editorialComponentRows.map((row, index) => (
             <div className='row' key={index}>
-              {row.map((component, index) => <div className='col' key={index}>{getComponent(component)}</div>)}
+              {row.map((component, index) => {
+                const value = getComponent(component)
+                return value ? <div className='col' key={index} children={value} /> : null
+              }
+              )}
             </div>
           ))}
         </Suspense>

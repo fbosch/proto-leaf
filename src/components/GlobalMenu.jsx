@@ -1,28 +1,77 @@
-import React, { useContext, useMemo } from 'react'
+import { Icon, Menu } from 'semantic-ui-react'
+import React, { useCallback, useContext, useMemo } from 'react'
 
 import { Link } from 'react-router-dom'
-import { Menu } from 'semantic-ui-react'
 import PageContext from '../contexts/PageContext'
 import isEmpty from 'lodash/isEmpty'
+import some from 'lodash/_arraySome'
+import sortBy from 'lodash/sortBy'
+import toNumber from 'lodash/toNumber'
+import { useCurrentPage } from '../hooks'
 
 export default function GlobalMenu (props) {
   const pages = useContext(PageContext)
-  const links = useMemo(() => pages.filter(page => page.hideInLists === false), [pages])
-  // const childLinks = useMemo(() => links.filter(page => page.parent), [links])
-  const topLevelLinks = useMemo(() => links.filter(page => isEmpty(page.parent)), [links])
-      // {/* {topLevelLinks.map(link => <Link to={'/' + link.id} key={link.id}>{link.name}</Link>)} */}
+  const currentPage = useCurrentPage()
+  const links = useMemo(() => sortBy(pages.filter(page => page.hideInLists === false), 'sortOrder'), [pages])
+  const subMenuLinks = useMemo(() => links.filter(page => page.parent && page.parent !== ''), [links])
+  const topLevelLinks = useMemo(() => links.filter(page => !page.parent || page.parent === ''), [links])
+
+  const getAllChildren = useCallback(link => {
+    const children = links.filter(page => link && toNumber(page.parent) === toNumber(link.id))
+    if (children) return [...children, ...children.flatMap(getAllChildren)]
+    return []
+  }, [links])
+
+  const isActive = useCallback(link => {
+    const allChildren = getAllChildren(link)
+    if (some(allChildren, isActive)) return true
+    if (link === currentPage) return true
+    return false
+  }, [currentPage])
+
+  const activeLevels = useMemo(() => {
+    const activeTopLevel = topLevelLinks.find(isActive)
+    const activeChildren = getAllChildren(activeTopLevel).filter(isActive)
+    const currentPageChildren = getAllChildren(currentPage)
+    if (isEmpty(currentPageChildren)) return activeChildren.length
+    return activeChildren.length + 1
+  }, [currentPage, topLevelLinks])
+
+  const getSubMenuItems = useCallback(link => {
+    const childLinks = sortBy(subMenuLinks.filter(subLink => toNumber(subLink.parent) === toNumber(link.id)), 'sortOrder')
+    if (isEmpty(childLinks) === false) {
+      return (
+        <Menu key={link.id + 'menu'}>
+          {childLinks.map(childLink => (
+            [
+              <Menu.Item key={link.id + childLink.id} className={isActive(childLink) ? 'active' : ''}>
+                <Link to={'/' + childLink.id}>
+                  {childLink.name}
+                </Link>
+                {getSubMenuItems(childLink)}
+              </Menu.Item>,
+              getSubMenuItems(childLink)
+            ]
+          ))}
+        </Menu>
+      )
+    }
+    return null
+  }, [subMenuLinks])
+
   return (
-    <nav className='global-menu' key='global-menu'>
+    <nav className='global-menu' key='global-menu' style={{ height: (activeLevels ? 50 + (50 * activeLevels) : 50) + 'px' }}>
       <Menu>
-          {topLevelLinks.map(link => (
-            <Menu.Item key={link.id}>
-              <Link to={'/' + link.id}>
-                {link.name}
-              </Link>
-            </Menu.Item>)
-          )}
+        <Menu.Item><Link to='/'><Icon name='home' /></Link></Menu.Item>
+        {topLevelLinks.map(link => [
+          <Menu.Item key={link.id} className={isActive(link) ? 'active' : ''}>
+            <Link to={'/' + link.id}>
+              {link.name}
+            </Link>
+          </Menu.Item>,
+          getSubMenuItems(link)
+        ])}
       </Menu>
     </nav>
-
   )
 }

@@ -19,8 +19,51 @@
 	grid-area: head;
 	max-width: 1200px;
 	width: 100%;
+	z-index: 40;
 	margin: 0 auto;
+	position: relative;
+	transition: height 200ms linear;
+
+	.ui.menu {
+		box-shadow: none;
+		border-radius: 0;
+
+		.item:hover, .item:focus, .item.active {
+			+.ui.menu {
+				display: flex;
+				.ui.menu {
+					position: absolute;
+				}
+			}
+		}
+		.ui.menu {
+			&:hover, &:focus, &:active {
+				display: flex;
+			}
+			display: none;
+			position: absolute;
+			top: 45px;
+			left: 50%;
+			transform: translateX(-50%);
+			height: 50px;
+			max-width: 1200px;
+			width: 100vw;
+			.ui.menu {
+				top: 45px;
+			}
+		}
+	}
 }
+
+.ui.page-not-found {
+	padding-top: $spacing;
+	text-align: center;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
 
 main {
 	overflow: hidden;
@@ -31,18 +74,60 @@ main {
 }
 
 .row {
+	&:empty {
+		display: none;
+	}
 	display: flex;
 	justify-content: space-between;
 	width: 100%;
-	margin-bottom: $spacing;
+	+.row {
+		margin-top: $spacing;
+	}
 	@include mobile {
+		+.row {
+			margin-top: 0;
+		}
 		flex-direction: column;
 	}
 }
 
+.col {
+	flex: 1;
+	max-width: 100%;
+	@include mobile {
+		margin: 0 0 $spacing;
+	}
+
+	&:first-of-type+.col {
+		margin-left: $spacing;
+		&:not(:last-of-type) {
+			margin-right: $spacing;
+		}
+		@include mobile {
+			&:not(:last-of-type) {
+				margin-right: 0;
+			}
+			margin-left: 0;
+		}
+	}
+
+	+ .col:not(:last-of-type) {
+		margin-right: $spacing;
+		}
+		@include mobile {
+			margin-right: 0;
+			margin-bottom: $spacing;
+		}
+}
+
 .footer {
-	background: orange;
 	grid-area: foot;
+}
+
+.ui.text.rich-content {
+	max-width: 100%;
+	margin-right: 0 !important;
+	margin-left: 0 !important;
 }
 
 .loader {
@@ -54,4 +139,79 @@ main {
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);
+}
+
+.ui.spot {
+	min-height: 100%;
+	height: 100%;
+	width: 100%;
+	z-index: 1;
+	.description {
+		height: auto;
+		max-height: calc(100% - 150px);
+		min-height: 120px;
+	}
+
+	>.content {
+		height: 100%;
+		min-height: 150px;
+		a {
+			display: block;
+			margin-top: 5px;
+		}
+		.description {
+			max-height: calc(100% - 150px);
+		}
+	}
+
+	&.has-background {
+		background: grey;
+		min-height: 250px;
+		height: 100%;
+		overflow: hidden;
+		&:before {
+			content: '';
+			height: 100px;
+			width: 100%;
+			background: linear-gradient(to bottom, rgba(0,0,0,0.45), rgba(0,0,0,0));
+			position: absolute;
+			z-index: -1;
+		}
+		.header {
+			color: white;
+		}
+		.meta {
+			position: absolute;
+			bottom: $spacing;
+		}
+		>.content {
+			padding: $spacing;
+			color: white;
+			text-shadow:  rgba(0,0,0,0.35) 0px 0px 10px;
+			> * {
+				a {
+					display: block;
+					color: inherit;
+					&:hover {
+						color: lightblue;
+					}
+				}
+				color: inherit;
+			}
+		}
+	}
+}
+
+.ui.image.spot-background {
+	object-position: center;
+	object-fit: cover;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: -2;
+	pointer-events: none;
+	-webkit-user-drag: none;
+	user-select: none;
 }

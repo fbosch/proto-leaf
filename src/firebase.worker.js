@@ -37,7 +37,7 @@ self.addEventListener('message', event => {
 function subscribeToComponents () {
   console.info('✔️ Subscribed to Components Spreadsheet')
   const componentsRef = database.ref(`/${spreadsheet}/Components`)
-  const unusedProperties = ['description', 'component', 'category']
+  const unusedProperties = ['description', 'component']
   componentsRef.on('value', snapshot => {
     const components = snapshot.val()
     if (!components) return
