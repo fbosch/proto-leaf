@@ -3,11 +3,20 @@
 import camelCase from 'lodash/camelCase'
 import every from 'lodash/every'
 import isEmpty from 'lodash/isEmpty'
+import memoize from 'lodash/memoize'
 import omit from 'lodash/omit'
 import omitBy from 'lodash/omitBy'
 
 importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js')
 importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js')
+
+self.addEventListener('message', event => {
+  const { action, ...rest } = event.data
+  switch (action) {
+    case 'components': return subscribeToComponents(rest)
+    case 'pages': return subscribeToPages(rest)
+  }
+})
 
 const config = {
   apiKey: process.env.FIREBASE_APIKEY,
@@ -22,32 +31,35 @@ const config = {
 console.info('🔥 Initializing Firbase WebWorker')
 
 self.firebase.initializeApp(config)
-
 const database = self.firebase.database()
 const spreadsheet = process.env.SPREADSHEET_ID
 
-self.addEventListener('message', event => {
-  const { action, ...rest } = event.data
-  switch (action) {
-    case 'components': return subscribeToComponents(rest)
-    case 'pages': return subscribeToPages(rest)
-  }
-})
+function formatComponentProperties (component) {
+  const unusedProperties = ['component']
+  let formattedComponent = omit(component, unusedProperties)
+  formattedComponent = omitBy(formattedComponent, isEmpty)
+  return formattedComponent
+}
+
+const formatProps = memoize(formatComponentProperties)
+
+function formatComponents (components) {
+  return Object.keys(components).reduce((accum, component) => ({
+    ...accum, // convert components object to camelCasing
+    [camelCase(component)]: formatProps(components[component])
+  }), {})
+}
+
+const format = memoize(formatComponents)
 
 function subscribeToComponents () {
   console.info('✔️ Subscribed to Components Spreadsheet')
   const componentsRef = database.ref(`/${spreadsheet}/Components`)
-  const unusedProperties = ['description', 'component']
   componentsRef.on('value', snapshot => {
     const components = snapshot.val()
     if (!components) return
     // remove unused and empty properties and format naming to fit componentMap
-    const formattedComponets = Object.keys(components).reduce((accum, component) => ({
-      ...accum, // convert components object to camelCasing
-      [camelCase(component)]: {
-        ...omit(omitBy(components[component], isEmpty), unusedProperties)
-      }
-    }), {})
+    const formattedComponets = format(components)
     const value = JSON.stringify(formattedComponets)
     self.postMessage({ action: 'components', value })
   })

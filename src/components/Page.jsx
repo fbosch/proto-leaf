@@ -36,20 +36,23 @@ export default function Page (props) {
     .filter(row => !row.includes('globalMenu'))
     .map(row => row.map(getComponent)), [layoutComponentRows])
 
+  const renderedComponents = useMemo(() =>
+    editorialComponentRows.map((row, index) => (
+      <div className='row' key={index}>
+        {row.map((component, index) => {
+          const value = getComponent(component)
+          return value ? <div className='col' key={index} children={value} /> : null
+        }
+        )}
+      </div>
+    )), [editorialComponentRows])
+
   const content = useMemo(() => [
     ...layoutComponentsWithoutMenuAndFooter,
-    <main key={id + 'content'}>
+    <main key={id}>
       <Container>
         <Suspense fallback=''>
-          {editorialComponentRows.map((row, index) => (
-            <div className='row' key={index}>
-              {row.map((component, index) => {
-                const value = getComponent(component)
-                return value ? <div className='col' key={index} children={value} /> : null
-              }
-              )}
-            </div>
-          ))}
+          {renderedComponents}
         </Suspense>
       </Container>
     </main>

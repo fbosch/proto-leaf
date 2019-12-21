@@ -2,9 +2,9 @@ import { Container, Icon, List, Segment } from 'semantic-ui-react'
 
 import React from 'react'
 
-export default function Footer () {
+export default function Footer ({ description }) {
   return (
-    <footer className='footer' key='footer'>
+    <footer className='footer' key='footer' title={description}>
       <Container>
         <Segment.Group horizontal>
           <Segment>

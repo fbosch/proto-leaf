@@ -13,6 +13,10 @@
 		"head head head head"
 		"main main main main"
 		"foot foot foot foot";
+
+	[title] {
+		cursor: help;
+	}
 }
 
 .global-menu {
@@ -56,6 +60,9 @@
 }
 
 .ui.page-not-found {
+	opacity: 0;
+	animation: fade-in 300ms ease 50ms;
+	animation-fill-mode: forwards;
 	padding-top: $spacing;
 	text-align: center;
 	position: absolute;
@@ -71,6 +78,9 @@ main {
 	width: 100%;
 	padding: 30px;
 	margin: 0 auto;
+	opacity: 0;
+	animation: fade-in 250ms ease;
+	animation-fill-mode: forwards;
 }
 
 .row {
@@ -139,6 +149,9 @@ main {
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);
+	svg {
+		scale: 1.5;
+	}
 }
 
 .ui.spot {
@@ -214,4 +227,9 @@ main {
 	pointer-events: none;
 	-webkit-user-drag: none;
 	user-select: none;
+}
+
+.ui.header.page-heading {
+	font-size: 2.5rem;
+	font-weight: 600;
 }

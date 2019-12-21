@@ -5,19 +5,11 @@ import LayoutContext from '../contexts/LayoutContext'
 import LoadingIndicator from './LoadingIndicator'
 import Page from './Page'
 import isEmpty from 'lodash/isEmpty'
+import memoize from 'lodash/memoize'
 import { useCurrentPage } from '../hooks'
 
-function pageHasGlobalMenu (page) {
-  if (!page) return false
-  const allComponents = page.components.flatMap(components => components)
-  return Boolean(allComponents.find(component => component === 'globalMenu'))
-}
-
-function pageHasFooter (page) {
-  if (!page) return false
-  const allComponents = page.components.flatMap(components => components)
-  return Boolean(allComponents.find(component => component === 'footer'))
-}
+const hasGlobalMenu = memoize(pageHasGlobalMenu)
+const hasFooter = memoize(pageHasFooter)
 
 export default function Routes ({ pages }) {
   const currentPage = useCurrentPage()
@@ -25,8 +17,8 @@ export default function Routes ({ pages }) {
   const [homePage, ...rest] = pages || []
 
   useEffect(() => {
-    const showGlobalMenu = pageHasGlobalMenu(currentPage)
-    const showFooter = pageHasFooter(currentPage)
+    const showGlobalMenu = hasGlobalMenu(currentPage)
+    const showFooter = hasFooter(currentPage)
     layout.setLayout({ showGlobalMenu, showFooter })
   }, [currentPage])
 
@@ -41,4 +33,16 @@ export default function Routes ({ pages }) {
       <Route path='/'><Page {...homePage} key={homePage.id + homePage.name} /></Route>
     </Switch>
   )
+}
+
+function pageHasGlobalMenu (page) {
+  if (!page) return false
+  const allComponents = page.components.flatMap(components => components)
+  return Boolean(allComponents.find(component => component === 'globalMenu'))
+}
+
+function pageHasFooter (page) {
+  if (!page) return false
+  const allComponents = page.components.flatMap(components => components)
+  return Boolean(allComponents.find(component => component === 'footer'))
 }

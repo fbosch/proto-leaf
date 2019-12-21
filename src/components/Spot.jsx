@@ -7,11 +7,11 @@ import classNames from 'classnames'
 export default function Spot (props) {
   const {
     image, type, richContent, ctaText, linkText, linkUrl,
-    headingOne, headingTwo, headingThree
+    headingOne, headingTwo, headingThree, description
   } = props
-  const useBackgroundImage = type.includes('background')
+  const useBackgroundImage = type.includes('background') && image
   return (
-    <Card className={classNames('spot', { 'has-background': useBackgroundImage })}>
+    <Card className={classNames('spot', { 'has-background': useBackgroundImage })} title={description}>
       {image && useBackgroundImage === false && <Image src={image} loading='lazy' />}
       <Card.Content>
         <Card.Header>

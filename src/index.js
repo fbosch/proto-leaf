@@ -1,3 +1,5 @@
+import './styles/main.scss'
+
 import { useComponents, usePages } from './hooks'
 
 import { ComponentsProvider } from './contexts/ComponentsContext'

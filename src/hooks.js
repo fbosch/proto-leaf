@@ -1,5 +1,3 @@
-import './styles/main.scss'
-
 import React, { Fragment, lazy, useCallback, useContext, useEffect, useRef, useState } from 'react'
 
 import ComponentsContext from './contexts/ComponentsContext'
@@ -11,7 +9,7 @@ import { useLocation } from 'react-router-dom'
 
 // eslint-disable-next-line
 const worker = new Worker('./firebase.worker.js')
-const disableAllCaching = false
+const disableAllCaching = true
 if (disableAllCaching) console.warn('Caching is disabled')
 
 export function usePages ({ client = 'Default', disableCache = disableAllCaching } = {}) {
@@ -19,23 +17,30 @@ export function usePages ({ client = 'Default', disableCache = disableAllCaching
   const initialized = useRef(false)
   const initialValue = cached && disableCache === false ? JSON.parse(cached) : undefined
   const [pages, setPages] = useState(initialValue)
+  const previousValue = useRef(initialValue)
+
   useEffect(() => {
     const action = 'pages'
     worker.postMessage({ action, client })
     const listener = worker.addEventListener('message', event => {
       if (event.data.action === action) {
         // prevent setting pages if it is equal to cache
-        if (cached === event.data.value && initialized.current === false) {
+        if (disableCache === false && cached === event.data.value && initialized.current === false) {
           initialized.current = true
           return
         }
-        setPages(JSON.parse(event.data.value))
+        if (previousValue.current !== event.data.value) {
+          const newValue = JSON.parse(event.data.value)
+          previousValue.current = event.data.value
+          setPages(newValue)
+        }
         initialized.current = true
+        previousValue.current = event.data.value
         window.requestIdleCallback(() => window.localStorage.setItem(client, event.data.value))
       }
     })
     return () => worker.removeEventListener('message', listener)
-  }, [initialized])
+  }, [initialized, previousValue])
   return pages
 }
 
@@ -54,22 +59,28 @@ export function useComponents ({ disableCache = disableAllCaching } = {}) {
   const initialized = useRef(false)
   const initialValue = cached && disableCache === false ? JSON.parse(cached) : undefined
   const [components, setComponents] = useState(initialValue)
+  const previousValue = useRef(initialValue)
+
   useEffect(() => {
     worker.postMessage({ action })
     const listener = worker.addEventListener('message', event => {
       if (event.data.action === action) {
         // prevent setting components if it is equal to cache
-        if (cached === event.data.value && initialized.current === false) {
+        if (disableCache === false && cached === event.data.value && initialized.current === false) {
           initialized.current = true
           return
         }
-        setComponents(JSON.parse(event.data.value))
+        if (previousValue.current !== event.data.value) {
+          const newValue = JSON.parse(event.data.value)
+          setComponents(newValue)
+        }
         initialized.current = true
+        previousValue.current = event.data.value
         window.requestIdleCallback(() => window.localStorage.setItem(action, event.data.value))
       }
     })
     return () => worker.removeEventListener('message', listener)
-  }, [initialized])
+  }, [initialized, previousValue])
   return components
 }
 
@@ -86,6 +97,6 @@ export function useComponent (page) {
     const componentData = components[componentName]
     const asyncComponent = getAsyncComponent(componentFileName, componentData)
     const Component = asyncComponent ? lazy(asyncComponent) : Fragment
-    return asyncComponent ? <Component {...componentData} key={key || componentFileName} page={page} /> : null
+    return asyncComponent ? <Component {...componentData} key={key || componentFileName} page={page} /> : componentFileName
   }, [components])
 }
