@@ -1,6 +1,10 @@
 /* eslint-env worker */
 
-import { camelCase, every, isEmpty, omit, omitBy } from 'lodash'
+import camelCase from 'lodash/camelCase'
+import every from 'lodash/every'
+import isEmpty from 'lodash/isEmpty'
+import omit from 'lodash/omit'
+import omitBy from 'lodash/omitBy'
 
 importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js')
 importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js')
@@ -15,6 +19,7 @@ const config = {
   appId: '1:985773592777:web:975852c9b59a2bcc8ffd18',
   measurementId: 'G-RMTQBWLYXN'
 }
+console.info('🔥 Initializing Firbase WebWorker')
 
 self.firebase.initializeApp(config)
 

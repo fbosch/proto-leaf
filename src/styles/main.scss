@@ -3,7 +3,7 @@
 @import "./mixins";
 @import "./animation";
 
-.wrapper {
+.grid {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	grid-auto-rows: minmax(100px, auto);
@@ -17,13 +17,14 @@
 
 .global-menu {
 	grid-area: head;
-	height: 50px;
+	max-width: 1200px;
+	width: 100%;
+	margin: 0 auto;
 }
 
 main {
 	overflow: hidden;
 	grid-area: main;
-	max-width: 1200px;
 	width: 100%;
 	padding: 30px;
 	margin: 0 auto;
@@ -33,6 +34,7 @@ main {
 	display: flex;
 	justify-content: space-between;
 	width: 100%;
+	margin-bottom: $spacing;
 	@include mobile {
 		flex-direction: column;
 	}
@@ -41,10 +43,6 @@ main {
 .footer {
 	background: orange;
 	grid-area: foot;
-}
-
-.global-menu {
-	background: greenyellow;
 }
 
 .loader {

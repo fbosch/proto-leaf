@@ -3,12 +3,16 @@ import './styles/main.scss'
 import React, { Fragment, lazy, useCallback, useContext, useEffect, useState } from 'react'
 
 import ComponentsContext from './contexts/ComponentsContext'
+import PageContext from './contexts/PageContext'
 import componentMap from './components'
-import { isEmpty } from 'lodash'
+import isEmpty from 'lodash/isEmpty'
+import toNumber from 'lodash/toNumber'
+import { useLocation } from 'react-router-dom'
 
 // eslint-disable-next-line
 const worker = new Worker('./firebase.worker.js')
 const disableAllCaching = false
+if (disableAllCaching) console.warn('Sheet caching is disabled')
 
 export function usePages ({ client = 'Default', disableCache = disableAllCaching } = {}) {
   const cached = window.localStorage.getItem(client)
@@ -26,6 +30,14 @@ export function usePages ({ client = 'Default', disableCache = disableAllCaching
     return () => worker.removeEventListener('message', listener)
   }, [])
   return pages
+}
+
+export function useCurrentPage () {
+  const pages = useContext(PageContext)
+  const location = useLocation()
+  const routeId = toNumber(location.pathname.replace('/', ''))
+  const currentPage = pages && pages.find(page => routeId === 0 ? page.id === 1 : page.id === routeId)
+  return currentPage
 }
 
 // subscribe to the list of spreadsheet components

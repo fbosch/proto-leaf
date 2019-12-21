@@ -1,3 +1,4 @@
+import { Container } from 'semantic-ui-react'
 import React from 'react'
 import { sanitize } from 'dompurify'
 
@@ -6,5 +7,6 @@ function createMarkup (html) {
 }
 
 export default function RictTextContent ({ richContent }) {
-  return <div dangerouslySetInnerHTML={createMarkup(richContent)} className='rich-content' />
+  return <Container text dangerouslySetInnerHTML={createMarkup(richContent)} className='rich-content' />
 }
+

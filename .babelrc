@@ -3,5 +3,17 @@
 		"@babel/preset-env",
 		"@babel/preset-react"
 	],
-	"plugins": ["lodash"]
+	"plugins": [
+		"lodash",
+		[
+				"transform-semantic-ui-react-imports", {
+						"convertMemberImports": true,
+						"importType": "es",
+						"addCssImports": false,
+						"importMinifiedCssFiles": false,
+						"addLessImports": false,
+						"addDuplicateStyleImports": false
+				}
+		]
+]
 }

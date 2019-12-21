@@ -1,10 +1,15 @@
-import React, { Suspense, useContext } from 'react'
-import { camelCase, isArray, some, toNumber } from 'lodash'
+import React, { Fragment, Suspense, useContext, useMemo } from 'react'
 
 import ComponentsContext from '../contexts/ComponentsContext'
+import { Container } from 'semantic-ui-react'
 import Helmet from 'react-helmet'
 import LoadingIndicator from './LoadingIndicator'
 import PageContext from '../contexts/PageContext'
+import PageNotFound from './PageNotFound'
+import camelCase from 'lodash/camelCase'
+import isArray from 'lodash/isArray'
+import some from 'lodash/_arraySome'
+import toNumber from 'lodash/toNumber'
 import { useComponent } from '../hooks'
 import { useLocation } from 'react-router'
 
@@ -21,42 +26,39 @@ export default function Page (props) {
   const pages = useContext(PageContext)
   const componentsData = useContext(ComponentsContext)
   const getComponent = useComponent({ name }) // page data passed to components
-  const isOnHomepage = location.pathname === '/'
+  const isOnHomepage = useMemo(() => location.pathname === '/', [location])
+  const editorialComponentRows = useMemo(() => components.filter(row => isEditorial(row, componentsData)), [components, componentsData])
+  const layoutComponentRows = useMemo(() => components.filter(row => !isEditorial(row, componentsData)), [components, componentsData])
 
-  // TODO: create page not found compoent
-  if (!pages.find(page => page.id === toNumber(location.pathname.replace('/', ''))) && !isOnHomepage) return 'page not found'
-
-  const editorialComponentRows = components.filter(row => isEditorial(row, componentsData))
-  const layoutComponentRows = components.filter(row => !isEditorial(row, componentsData))
-
-  const layoutComponentsWithoutFooter = layoutComponentRows
+  // Remove global header and footer from content (managed by Layout)
+  const layoutComponentsWithoutMenuAndFooter = useMemo(() => layoutComponentRows
     .filter(row => !row.includes('footer'))
-    .map(row => row.map(getComponent))
+    .filter(row => !row.includes('globalMenu'))
+    .map(row => row.map(getComponent)), [layoutComponentRows])
 
-  const content = [
-    ...layoutComponentsWithoutFooter,
-    <main key='content'>
-      <Suspense fallback=''>
-        {editorialComponentRows.map((row, index) => (
-          <div className='row' key={index}>
-            {row.map((component, index) => <div className='col' key={index}>{getComponent(component)}</div>)}
-          </div>
-        ))}
-      </Suspense>
+  const content = useMemo(() => [
+    ...layoutComponentsWithoutMenuAndFooter,
+    <main key={id + 'content'}>
+      <Container>
+        <Suspense fallback=''>
+          {editorialComponentRows.map((row, index) => (
+            <div className='row' key={index}>
+              {row.map((component, index) => <div className='col' key={index}>{getComponent(component)}</div>)}
+            </div>
+          ))}
+        </Suspense>
+      </Container>
     </main>
-  ]
+  ], [layoutComponentsWithoutMenuAndFooter, editorialComponentRows])
 
-  const footer = layoutComponentRows.find(row => row.includes('footer'))
-  if (footer) content.push(getComponent('footer'))
+  if (!pages.find(page => page.id === toNumber(location.pathname.replace('/', ''))) && !isOnHomepage) return <PageNotFound />
 
   return (
-    <div className='page' key={id}>
+    <Fragment key={name}>
       <Helmet title={name} />
       <Suspense fallback={<LoadingIndicator />}>
-        <div className='wrapper'>
-          {content}
-        </div>
+        {content}
       </Suspense>
-    </div>
+    </Fragment>
   )
 }
