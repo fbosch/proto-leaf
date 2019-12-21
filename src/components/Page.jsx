@@ -8,8 +8,8 @@ import PageContext from '../contexts/PageContext'
 import PageNotFound from './PageNotFound'
 import camelCase from 'lodash/camelCase'
 import isArray from 'lodash/isArray'
+import kebabCase from 'lodash/kebabCase'
 import some from 'lodash/_arraySome'
-import toNumber from 'lodash/toNumber'
 import { useComponent } from '../hooks'
 import { useLocation } from 'react-router'
 
@@ -58,7 +58,7 @@ export default function Page (props) {
     </main>
   ], [layoutComponentsWithoutMenuAndFooter, editorialComponentRows])
 
-  if (!pages.find(page => page.id === toNumber(location.pathname.replace('/', ''))) && !isOnHomepage) return <PageNotFound />
+  if (!pages.find(page => kebabCase(page.name) === location.pathname.replace('/', '')) && !isOnHomepage) return <PageNotFound />
 
   return (
     <Fragment key={name}>

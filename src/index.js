@@ -10,6 +10,10 @@ import { PageProvider } from './contexts/PageContext'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Routes from './components/Routes'
+import camelCase from 'lodash/camelCase'
+import startCase from 'lodash/startCase'
+
+document.title = startCase(camelCase(window.location.pathname.replace('/', '')))
 
 function App () {
   const pages = usePages()

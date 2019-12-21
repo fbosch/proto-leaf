@@ -35,6 +35,7 @@
 		.item:hover, .item:focus, .item.active {
 			+.ui.menu {
 				display: flex;
+				z-index: 45;
 				.ui.menu {
 					position: absolute;
 				}
@@ -43,6 +44,7 @@
 		.ui.menu {
 			&:hover, &:focus, &:active {
 				display: flex;
+				z-index: 45;
 			}
 			display: none;
 			position: absolute;
@@ -61,7 +63,7 @@
 
 .ui.page-not-found {
 	opacity: 0;
-	animation: fade-in 300ms ease 50ms;
+	animation: fade-in 500ms ease 150ms;
 	animation-fill-mode: forwards;
 	padding-top: $spacing;
 	text-align: center;
@@ -79,7 +81,7 @@ main {
 	padding: 30px;
 	margin: 0 auto;
 	opacity: 0;
-	animation: fade-in 250ms ease;
+	animation: fade-in 300ms ease;
 	animation-fill-mode: forwards;
 }
 

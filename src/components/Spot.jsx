@@ -6,8 +6,8 @@ import classNames from 'classnames'
 
 export default function Spot (props) {
   const {
-    image, type, richContent, ctaText, linkText, linkUrl,
-    headingOne, headingTwo, headingThree, description
+    image, type, richContent, ctaText, ctaUrl, linkText, linkUrl,
+    headingOne, headingTwo, headingThree, description, teaser
   } = props
   const useBackgroundImage = type.includes('background') && image
   return (
@@ -20,11 +20,12 @@ export default function Spot (props) {
           {headingThree && <Header as='h3'>{headingThree}</Header>}
         </Card.Header>
         <Card.Description>
+          {teaser}
           <RichTextContent richContent={richContent} />
         </Card.Description>
         <Card.Meta>
-          {ctaText && <Button color='red'>{ctaText}</Button>}
-          {linkText && <a href={linkUrl}>{linkText}</a>}
+          {ctaText && <a href={ctaUrl} title={ctaText}><Button color='red'>{ctaText}</Button></a>}
+          {linkText && <a href={linkUrl} title={linkText}>{linkText}</a>}
         </Card.Meta>
         {image && useBackgroundImage && <Image src={image} className='spot-background' />}
       </Card.Content>

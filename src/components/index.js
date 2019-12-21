@@ -1,5 +1,7 @@
 export function getAsyncComponent (component, data) {
-  if (component.startsWith('Spot') || (data.category && data.category.toLowerCase() === 'spot')) return () => import('./Spot')
+  if (component.startsWith('Spot') || (data.category && data.category.toLowerCase() === 'spot')) {
+    return () => import('./Spot')
+  }
   switch (component) {
     case 'GlobalMenu': return () => import('./GlobalMenu')
     case 'Footer': return () => import('./Footer')

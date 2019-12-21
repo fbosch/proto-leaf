@@ -7,9 +7,6 @@ import memoize from 'lodash/memoize'
 import omit from 'lodash/omit'
 import omitBy from 'lodash/omitBy'
 
-importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js')
-importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js')
-
 self.addEventListener('message', event => {
   const { action, ...rest } = event.data
   switch (action) {
@@ -17,6 +14,9 @@ self.addEventListener('message', event => {
     case 'pages': return subscribeToPages(rest)
   }
 })
+
+importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js')
+importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js')
 
 const config = {
   apiKey: process.env.FIREBASE_APIKEY,
@@ -28,8 +28,8 @@ const config = {
   appId: '1:985773592777:web:975852c9b59a2bcc8ffd18',
   measurementId: 'G-RMTQBWLYXN'
 }
-console.info('🔥 Initializing Firbase WebWorker')
 
+console.info('🔥 Initializing Firbase WebWorker')
 self.firebase.initializeApp(config)
 const database = self.firebase.database()
 const spreadsheet = process.env.SPREADSHEET_ID
@@ -38,50 +38,57 @@ function formatComponentProperties (component) {
   const unusedProperties = ['component']
   let formattedComponent = omit(component, unusedProperties)
   formattedComponent = omitBy(formattedComponent, isEmpty)
+  Object.keys(formattedComponent).forEach(key => {
+    if (typeof formattedComponent[key] === 'string') {
+      formattedComponent[key].trim()
+    }
+  })
   return formattedComponent
 }
 
 const formatProps = memoize(formatComponentProperties)
 
 function formatComponents (components) {
-  return Object.keys(components).reduce((accum, component) => ({
+  return JSON.stringify(Object.keys(components).reduce((accum, component) => ({
     ...accum, // convert components object to camelCasing
     [camelCase(component)]: formatProps(components[component])
-  }), {})
+  }), {}))
 }
 
-const format = memoize(formatComponents)
-
 function subscribeToComponents () {
+  const format = memoize(formatComponents)
   console.info('✔️ Subscribed to Components Spreadsheet')
   const componentsRef = database.ref(`/${spreadsheet}/Components`)
   componentsRef.on('value', snapshot => {
     const components = snapshot.val()
     if (!components) return
     // remove unused and empty properties and format naming to fit componentMap
-    const formattedComponets = format(components)
-    const value = JSON.stringify(formattedComponets)
+    const value = format(components)
     self.postMessage({ action: 'components', value })
   })
 }
 
+function formatPages (pages) {
+  return JSON.stringify(pages.filter(page => {
+    if (every(Object.values(page), isEmpty)) return false // filter out empty pages
+    return true
+  }).map(page => {
+    if (isEmpty(page.components) === false) {
+      const rows = page.components.split('\n')
+      page.components = rows.map(row => row.split(',').map(camelCase)) // convert to camelCase to match mapped components
+    }
+    return page
+  }))
+}
+
 function subscribeToPages ({ client }) {
+  const format = memoize(formatPages)
   console.info('✔️ Subscribed to Pages Spreadsheet')
   const pagesRef = database.ref(`/${spreadsheet}${client ? '/' + client : ''}`)
   pagesRef.on('value', snapshot => {
     const pages = snapshot.val()
     if (!pages) return
-    const formattedPages = pages.filter(page => {
-      if (every(Object.values(page), isEmpty)) return false // filter out empty pages
-      return true
-    }).map(page => {
-      if (isEmpty(page.components) === false) {
-        const rows = page.components.split('\n')
-        page.components = rows.map(row => row.split(',').map(camelCase)) // convert to camelCase to match mapped components
-      }
-      return page
-    })
-    const value = JSON.stringify(formattedPages)
+    const value = format(pages)
     self.postMessage({ action: 'pages', value })
   })
 }
