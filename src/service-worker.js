@@ -2,6 +2,13 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js')
 
 if (self.workbox) {
+  // eslint-disable-next-line
+  self.workbox.precaching.precacheAndRoute([])
+  console.log('⚙️ Service Worker loaded')
+  self.workbox.routing.registerRoute(
+    'https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js',
+    new self.workbox.strategies.CacheFirst()
+  )
   self.workbox.routing.registerRoute(
     'https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js',
     new self.workbox.strategies.CacheFirst()
@@ -16,15 +23,19 @@ if (self.workbox) {
   )
   self.workbox.routing.registerRoute(
     new RegExp('https://picsum.photos/'),
+    new self.workbox.strategies.NetworkFirst()
+  )
+  self.workbox.routing.registerRoute(
+    new RegExp('https://i.ytimg.com/vi/'),
     new self.workbox.strategies.StaleWhileRevalidate()
   )
   self.workbox.routing.registerRoute(
     /\.js$/,
-    new self.workbox.strategies.StaleWhileRevalidate()
+    new self.workbox.strategies.NetworkFirst()
   )
   self.workbox.routing.registerRoute(
     // Cache image files.
-    /\.(?:png|jpg|jpeg|svg|gif)$/,
+    /\.(?:png|jpg|jpeg|svg|gif|ico)$/,
     // Use the cache if it's available.
     new self.workbox.strategies.CacheFirst({
       // Use a custom cache name.
@@ -40,5 +51,5 @@ if (self.workbox) {
     })
   )
 } else {
-  console.log('Boo! Workbox didn\'t load 😬')
+  console.log('Service Worker didn\'t load 😬')
 }

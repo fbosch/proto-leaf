@@ -180,6 +180,7 @@ main {
 	width: 100%;
 	overflow: hidden;
 	z-index: 1;
+
 	.description {
 		height: auto;
 		max-height: calc(100% - #{$min-spot-height});
@@ -190,6 +191,7 @@ main {
 		height: 100%;
 		min-height: $min-spot-height;
 		.meta {
+			width: calc(100% - #{$spacing * 2});
 			position: absolute;
 			bottom: $spacing;
 		}
@@ -209,11 +211,14 @@ main {
 		overflow: hidden;
 		&:before {
 			content: '';
-			height: 100px;
+			height: 40%;
 			width: 100%;
 			background: linear-gradient(to bottom, rgba(0,0,0,0.45), rgba(0,0,0,0));
 			position: absolute;
 			z-index: -1;
+			@include mobile {
+				height: 60%;
+			}
 		}
 		.header {
 			color: white;
@@ -221,7 +226,7 @@ main {
 		>.content {
 			padding: $spacing;
 			color: white;
-			text-shadow:  rgba(0,0,0,0.35) 0px 0px 10px;
+			text-shadow:  rgba(0,0,0,0.45) 0px 0px 10px;
 			> * {
 				a {
 					display: block;
