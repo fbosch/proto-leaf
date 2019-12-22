@@ -1,4 +1,4 @@
-import LoadingIcon from '../assets/loader.svg'
+import LoadingIcon from '../images/loader.svg'
 import React from 'react'
 
 export default function LoadingIndicator () {

@@ -157,8 +157,19 @@ main {
 }
 
 .youtube-video {
-	height: 300px;
+	height: $min-video-height;
+	&.full-height {
+		background-size: 180%;
+		height: 100%;
+		min-height: $min-video-height;
+		@include tablet {
+			background-size: 250%;
+		}
+	}
 	&.yt-lite {
+		@include mobile {
+			background-size: 180%;
+		}
 		&:before { content: none; }
 	}
 }
@@ -167,6 +178,7 @@ main {
 	min-height: 100%;
 	height: 100%;
 	width: 100%;
+	overflow: hidden;
 	z-index: 1;
 	.description {
 		height: auto;
@@ -177,6 +189,10 @@ main {
 	>.content {
 		height: 100%;
 		min-height: $min-spot-height;
+		.meta {
+			position: absolute;
+			bottom: $spacing;
+		}
 		a {
 			display: block;
 			margin-top: 5px;
@@ -201,10 +217,6 @@ main {
 		}
 		.header {
 			color: white;
-		}
-		.meta {
-			position: absolute;
-			bottom: $spacing;
 		}
 		>.content {
 			padding: $spacing;

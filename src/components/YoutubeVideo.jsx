@@ -1,11 +1,15 @@
+import React, { Fragment } from 'react'
+
 import { LiteYouTubeEmbed } from 'react-lite-youtube-embed'
-import React from 'react'
+import classNames from 'classnames'
 import getYoutubeId from 'get-youtube-id'
 
-export default function YoutubeVideo ({ src }) {
+export default function YoutubeVideo ({ src, style, className }) {
   if (!src) return null
   const id = getYoutubeId(src)
   return (
-    <LiteYouTubeEmbed id={id} key={id} adNetwork={false} poster='hqdefault' wrapperClass='youtube-video yt-lite' />
+    <Fragment key={id}>
+      <LiteYouTubeEmbed id={id} adNetwork={false} poster='hqdefault' wrapperClass={classNames('youtube-video yt-lite', className)} />
+    </Fragment>
   )
 }
