@@ -53,6 +53,7 @@ function formatComponents (components) {
 }
 
 function subscribeToComponents ({ cache }) {
+  let initialized = false
   const format = memoize(formatComponents)
   console.info('✔️ Subscribed to Components Spreadsheet')
   const componentsRef = database.ref(`/${spreadsheet}/Components`)
@@ -61,11 +62,17 @@ function subscribeToComponents ({ cache }) {
     if (!components) return
     // remove unused and empty properties and format naming to fit componentMap
     const value = format(components)
+    if (value === cache && initialized === false) {
+      initialized = true
+      return
+    }
+    if (initialized === false) initialized = true
     self.postMessage({ action: 'components', value })
   })
 }
 
 function formatPages (pages) {
+  // TODO: remove empty properties
   return JSON.stringify(pages.filter(page => {
     if (every(Object.values(page), isEmpty)) return false // filter out empty pages
     return true
@@ -79,6 +86,7 @@ function formatPages (pages) {
 }
 
 function subscribeToPages ({ client, cache }) {
+  let initialized = false
   const format = memoize(formatPages)
   console.info('✔️ Subscribed to Pages Spreadsheet')
   const pagesRef = database.ref(`/${spreadsheet}${client ? '/' + client : ''}`)
@@ -86,6 +94,11 @@ function subscribeToPages ({ client, cache }) {
     const pages = snapshot.val()
     if (!pages) return
     const value = format(pages)
+    if (value === cache && initialized === false) {
+      initialized = true
+      return
+    }
+    if (initialized === false) initialized = true
     self.postMessage({ action: 'pages', value })
   })
 }

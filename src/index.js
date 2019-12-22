@@ -13,13 +13,13 @@ import Routes from './components/Routes'
 import camelCase from 'lodash/camelCase'
 import startCase from 'lodash/startCase'
 
-if ('serviceWorker' in navigator) {
+document.title = startCase(camelCase(window.location.pathname.replace('/', '')))
+
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('service-worker.js')
   })
 }
-
-document.title = startCase(camelCase(window.location.pathname.replace('/', '')))
 
 function App () {
   const pages = usePages()

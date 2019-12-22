@@ -10,38 +10,34 @@ import { useLocation } from 'react-router-dom'
 // eslint-disable-next-line
 const worker = new Worker('./firebase.worker.js')
 const enableCaching = true
-if (enableCaching === false) console.warn('Caching is disabled')
+console.assert(enableCaching, 'Caching is disabled')
 
 export function usePages ({ client = 'Default', enableCache = enableCaching } = {}) {
   const cached = window.localStorage.getItem(client)
-  const initialized = useRef(false)
-  const initialValue = enableCache && cached ? JSON.parse(cached) : undefined
+  const useCache = enableCache && cached
+  const initialValue = useCache ? JSON.parse(cached) : undefined
   const [pages, setPages] = useState(initialValue)
-  const previousValue = useRef(cached)
+  const previousValue = useRef(useCache)
 
   useEffect(() => {
     const action = 'pages'
-    worker.postMessage({ action, client })
+    worker.postMessage({ action, client, cache: useCache ? cached : null })
     const listener = worker.addEventListener('message', event => {
       if (event.data.action === action) {
         // prevent setting pages if it is equal to cache
-        if (enableCache && cached === event.data.value && initialized.current === false) {
-          previousValue.current = event.data.value
-          initialized.current = true
-          return
-        }
-        if (initialized.current === false || previousValue.current !== event.data.value) {
+        if (previousValue.current !== event.data.value) {
           const newValue = JSON.parse(event.data.value)
           setPages(newValue)
-          previousValue.current = event.data.value
+          console.groupCollapsed('🔄 Pages Spreadsheet was synced')
+          console.table(newValue)
+          console.groupEnd('🔄 Pages Spreadsheet was synced')
         }
-        initialized.current = true
         previousValue.current = event.data.value
         enableCache && window.requestIdleCallback(() => window.localStorage.setItem(client, event.data.value))
       }
     })
     return () => worker.removeEventListener('message', listener)
-  }, [initialized, previousValue])
+  }, [previousValue])
   return pages
 }
 
@@ -58,31 +54,28 @@ export function useComponents ({ enableCache = enableCaching } = {}) {
   const action = 'components'
   const cached = window.localStorage.getItem(action)
   const useCache = enableCache && cached
-  const initialized = useRef(false)
   const initialValue = useCache ? JSON.parse(cached) : undefined
   const [components, setComponents] = useState(initialValue)
-  const previousValue = useRef(cached)
+  const previousValue = useRef(useCache)
 
   useEffect(() => {
     worker.postMessage({ action, cache: useCache ? cached : null })
     const listener = worker.addEventListener('message', event => {
       if (event.data.action === action) {
         // prevent setting components if it is equal to cache
-        if (enableCache && cached === event.data.value && initialized.current === false) {
-          previousValue.current = cached
-          initialized.current = true
-          return
-        }
-        if (initialized.current === false || previousValue.current !== event.data.value) {
+        if (previousValue.current !== event.data.value) {
           const newValue = JSON.parse(event.data.value)
           setComponents(newValue)
+          console.groupCollapsed('🔄 Components Spreadsheet was synced')
+          console.table(newValue)
+          console.groupEnd('🔄 Components Spreadsheet was synced')
         }
         previousValue.current = event.data.value
         enableCache && window.requestIdleCallback(() => window.localStorage.setItem(action, event.data.value))
       }
     })
     return () => worker.removeEventListener('message', listener)
-  }, [initialized, previousValue])
+  }, [previousValue])
   return components
 }
 
