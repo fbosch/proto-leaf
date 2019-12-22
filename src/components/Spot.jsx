@@ -2,17 +2,20 @@ import { Button, Card, Header, Image } from 'semantic-ui-react'
 
 import React from 'react'
 import RichTextContent from './RichTextContent'
+import YoutubeVideo from './YoutubeVideo'
 import classNames from 'classnames'
 
 export default function Spot (props) {
   const {
     image, type, richContent, ctaText, ctaUrl, linkText, linkUrl,
-    headingOne, headingTwo, headingThree, description, teaser
+    headingOne, headingTwo, headingThree, description, teaser, component
   } = props
-  const useBackgroundImage = type.includes('background') && image
+  const useBackground = type.includes('background') && image
+  const useVideo = component && component.includes('video') && image
   return (
-    <Card className={classNames('spot', { 'has-background': useBackgroundImage })} title={description}>
-      {image && useBackgroundImage === false && <Image src={image} loading='lazy' />}
+    <Card className={classNames('spot', { 'has-background': useBackground })} title={description}>
+      {useVideo === false && image && useBackground === false && <Image src={image} loading='lazy' />}
+      {useVideo && useBackground === false && <YoutubeVideo src={image} />}
       <Card.Content>
         <Card.Header>
           {headingOne && <Header as='h1'>{headingOne}</Header>}
@@ -27,7 +30,7 @@ export default function Spot (props) {
           {ctaText && <a href={ctaUrl} title={ctaText}><Button color='red'>{ctaText}</Button></a>}
           {linkText && <a href={linkUrl} title={linkText}>{linkText}</a>}
         </Card.Meta>
-        {image && useBackgroundImage && <Image src={image} className='spot-background' />}
+        {image && useBackground && <Image src={image} className='spot-background' />}
       </Card.Content>
     </Card>
   )

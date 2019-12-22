@@ -4,7 +4,6 @@ import camelCase from 'lodash/camelCase'
 import every from 'lodash/every'
 import isEmpty from 'lodash/isEmpty'
 import memoize from 'lodash/memoize'
-import omit from 'lodash/omit'
 import omitBy from 'lodash/omitBy'
 
 self.addEventListener('message', event => {
@@ -35,9 +34,7 @@ const database = self.firebase.database()
 const spreadsheet = process.env.SPREADSHEET_ID
 
 function formatComponentProperties (component) {
-  const unusedProperties = ['component']
-  let formattedComponent = omit(component, unusedProperties)
-  formattedComponent = omitBy(formattedComponent, isEmpty)
+  const formattedComponent = omitBy(component, isEmpty)
   Object.keys(formattedComponent).forEach(key => {
     if (typeof formattedComponent[key] === 'string') {
       formattedComponent[key].trim()

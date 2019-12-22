@@ -5,15 +5,13 @@
 	],
 	"plugins": [
 		"lodash",
-		[
-				"transform-semantic-ui-react-imports", {
-						"convertMemberImports": true,
-						"importType": "es",
-						"addCssImports": false,
-						"importMinifiedCssFiles": false,
-						"addLessImports": false,
-						"addDuplicateStyleImports": false
-				}
-		]
-]
+		["transform-semantic-ui-react-imports", {
+			"convertMemberImports": true,
+			"importType": "es",
+			"addCssImports": false,
+			"importMinifiedCssFiles": false,
+			"addLessImports": false,
+			"addDuplicateStyleImports": false
+		}]
+	]
 }
