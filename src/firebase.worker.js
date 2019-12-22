@@ -52,7 +52,7 @@ function formatComponents (components) {
   }), {}))
 }
 
-function subscribeToComponents () {
+function subscribeToComponents ({ cache }) {
   const format = memoize(formatComponents)
   console.info('✔️ Subscribed to Components Spreadsheet')
   const componentsRef = database.ref(`/${spreadsheet}/Components`)
@@ -78,7 +78,7 @@ function formatPages (pages) {
   }))
 }
 
-function subscribeToPages ({ client }) {
+function subscribeToPages ({ client, cache }) {
   const format = memoize(formatPages)
   console.info('✔️ Subscribed to Pages Spreadsheet')
   const pagesRef = database.ref(`/${spreadsheet}${client ? '/' + client : ''}`)

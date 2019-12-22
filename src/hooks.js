@@ -57,13 +57,14 @@ export function useCurrentPage () {
 export function useComponents ({ enableCache = enableCaching } = {}) {
   const action = 'components'
   const cached = window.localStorage.getItem(action)
+  const useCache = enableCache && cached
   const initialized = useRef(false)
-  const initialValue = cached && enableCache ? JSON.parse(cached) : undefined
+  const initialValue = useCache ? JSON.parse(cached) : undefined
   const [components, setComponents] = useState(initialValue)
   const previousValue = useRef(cached)
 
   useEffect(() => {
-    worker.postMessage({ action })
+    worker.postMessage({ action, cache: useCache ? cached : null })
     const listener = worker.addEventListener('message', event => {
       if (event.data.action === action) {
         // prevent setting components if it is equal to cache
