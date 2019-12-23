@@ -9,6 +9,7 @@ import omitBy from 'lodash/omitBy'
 importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js')
 importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js')
 
+const spreadsheet = process.env.SPREADSHEET_ID
 const config = {
   apiKey: process.env.FIREBASE_APIKEY,
   authDomain: 'protoleaf-6fbe1.firebaseapp.com',
@@ -18,15 +19,14 @@ const config = {
   messagingSenderId: '985773592777',
   appId: '1:985773592777:web:975852c9b59a2bcc8ffd18'
 }
-if (!self.firebase) {
-  console.warn('🔥 Firebase WebWorker initialization failed')
-  return
-}
-self.firebase.initializeApp(config)
-const database = self.firebase.database()
-const spreadsheet = process.env.SPREADSHEET_ID
 
-console.info('🔥 Initialized Firbase WebWorker')
+if (self.firebase) {
+  console.info('🔥 Initialized Firbase WebWorker')
+  self.firebase.initializeApp(config)
+  self.database = self.firebase.database()
+} else {
+  console.warn('🔥 Firebase WebWorker initialization failed')
+}
 
 self.addEventListener('message', event => {
   const { action, ...rest } = event.data
@@ -66,7 +66,7 @@ function subscribeToComponents ({ cache }) {
   const format = memoize(formatComponents)
   console.info('✔️ Subscribed to "Components" spreadsheet')
 
-  const componentsRef = database.ref(`/${spreadsheet}/Components`)
+  const componentsRef = self.database.ref(`/${spreadsheet}/Components`)
   componentsRef.on('value', snapshot => {
     const components = snapshot.val()
     if (!components) {
@@ -102,7 +102,7 @@ function subscribeToPages ({ client, cache }) {
   const format = memoize(formatPages)
   console.info(`✔️ Subscribed to "${client}" spreadsheet`)
 
-  const pagesRef = database.ref(`/${spreadsheet}${client ? '/' + client : ''}`)
+  const pagesRef = self.database.ref(`/${spreadsheet}${client ? '/' + client : ''}`)
   pagesRef.on('value', snapshot => {
     const pages = snapshot.val()
     if (!pages) {
