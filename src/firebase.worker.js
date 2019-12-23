@@ -41,8 +41,8 @@ if (self.firebase) {
 
 function authenticate ({ client, password, spreadsheet = mainSheet }) {
   const auth = self.functions.httpsCallable('authenticate')
-  console.log(spreadsheet)
   auth({ client, password, spreadsheet }).then(result => {
+    console.log('auth result', result)
     if (result) self.postMessage('authenticate', result)
   }).catch(error => {
     console.error(error)
