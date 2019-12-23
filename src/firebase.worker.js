@@ -30,6 +30,7 @@ self.addEventListener('message', event => {
     case 'pages': return subscribeToPages(rest)
   }
 })
+
 if (self.firebase) {
   console.info('🔥 Initialized FireBase WebWorker')
   self.app = self.firebase.initializeApp(config)
