@@ -18,8 +18,7 @@ function isEditorial (row, data) {
   return true
 }
 
-export default function Page (props) {
-  const { components, name } = props
+export default function Page ({ components, name }) {
   const location = useLocation()
   const currentPage = useCurrentPage()
   const componentsData = useContext(ComponentsContext)

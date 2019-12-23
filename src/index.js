@@ -29,14 +29,7 @@ document.addEventListener('load', () => {
   window.firebase.analytics()
 })
 
-const parameters = queryString.parse(window.location.search)
-const validClientName = parameters.client && !parameters.client.includes('.') && parameters.client !== 'default'
-const client = (validClientName ? parameters.client : undefined) ||
- (
-   ['default', '', 'Leafs'].includes(parameters.client)
-     ? 'Default'
-     : window.localStorage.getItem('client') || 'Default'
- )
+const client = getClient()
 
 function App () {
   const [authenticated, authenticate] = useAuthentication({ client })
@@ -54,13 +47,24 @@ function App () {
 
 ReactDOM.render(<App />, document.getElementById('root'))
 
-if (validClientName === false) {
-  console.warn(
+function getClient () {
+  const parameters = queryString.parse(window.location.search)
+  const validClientName = parameters.client && !parameters.client.includes('.') && parameters.client !== 'default'
+  const client = (validClientName ? parameters.client : undefined) ||
+ (
+   ['default', '', 'Leafs'].includes(parameters.client)
+     ? 'Default'
+     : window.localStorage.getItem('client') || 'Default'
+ )
+  if (validClientName === false) {
+    console.warn(
   `Provided client name "${parameters.client}" is invalid.
                           ⇧
 
   🔴 Client Spreadsheets cannot have a "." in their name.
   🔵 Fallback client "${client}" is loaded.
   `
-  )
+    )
+  }
+  return client
 }

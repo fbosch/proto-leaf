@@ -9,7 +9,7 @@ import sortBy from 'lodash/sortBy'
 import toNumber from 'lodash/toNumber'
 import { useCurrentPage } from '../hooks'
 
-export default function GlobalMenu (props) {
+export default function GlobalMenu () {
   const pages = useContext(PageContext)
   const currentPage = useCurrentPage()
   const links = useMemo(() => sortBy(pages.filter(page => page.hideInLists === false), 'sortOrder'), [pages])

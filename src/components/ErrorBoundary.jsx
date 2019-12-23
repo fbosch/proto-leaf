@@ -1,9 +1,7 @@
 import { Component } from 'react'
 
 export default class ErrorBoundary extends Component {
-  componentDidCatch (error, info) {
-    this.setState({ error })
-  }
+  componentDidCatch (error) { this.setState({ error }) }
 
   render () {
     const { error } = this.state || {}

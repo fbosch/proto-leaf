@@ -77,6 +77,7 @@ function formatComponents (components) {
 }
 
 function subscribeToComponents ({ cache }) {
+  console.info('✔️ Subscribed to "Components" spreadsheet')
   let initialized = false
   const format = memoize(formatComponents)
 
@@ -94,7 +95,6 @@ function subscribeToComponents ({ cache }) {
       return
     }
     if (initialized === false) {
-      console.info('✔️ Subscribed to "Components" spreadsheet')
       initialized = true
     }
     self.postMessage({ action: 'components', value })
@@ -115,6 +115,7 @@ function formatPages (pages) {
 }
 
 function subscribeToPages ({ client, cache }) {
+  console.info(`✔️ Subscribed to "${client}" spreadsheet`)
   let initialized = false
   const format = memoize(formatPages)
 
@@ -131,7 +132,6 @@ function subscribeToPages ({ client, cache }) {
       return
     }
     if (initialized === false) {
-      console.info(`✔️ Subscribed to "${client}" spreadsheet`)
       initialized = true
     }
     self.postMessage({ action: 'pages', value })
