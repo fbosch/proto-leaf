@@ -25,9 +25,10 @@ export function useAuthentication ({ client }) {
 
   useEffect(() => {
     function authenticationListener (event) {
-      const { action, id } = event.data
+      const { action, id, ...rest } = event.data
       if (action === 'authenticate') {
         if (id) {
+          console.log(rest)
           Cookies.set(clientIdentifier, true, { expires: 3 })
           setAuthenticated(true)
         } else {
