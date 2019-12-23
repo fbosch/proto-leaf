@@ -66,7 +66,7 @@ export function useCurrentPage () {
     return rest.find(page => toInteger(page.id) === locationId)
   }
   if (path) {
-    return rest.find(page => page.url === path)
+    return pages.find(page => page.url === path)
   }
   return homePage
 }

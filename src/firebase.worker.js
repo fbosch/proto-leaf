@@ -22,7 +22,7 @@ const config = {
 }
 
 if (self.firebase) {
-  console.info('🔥 Initialized Firbase WebWorker')
+  console.info('🔥 Initialized FireBase WebWorker')
   self.app = self.firebase.initializeApp(config)
   self.database = self.firebase.database()
   self.functions = self.app.functions('europe-west1')
@@ -36,7 +36,7 @@ if (self.firebase) {
     }
   })
 } else {
-  console.warn('🔥 Firebase WebWorker initialization failed')
+  console.error('🔥 FireBase WebWorker Initialization Failed')
 }
 
 function authenticate ({ client, password, spreadsheet = mainSheet }) {

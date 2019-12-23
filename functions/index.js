@@ -11,7 +11,7 @@ exports.authenticate = functions.https.onCall(data => {
     const handleAuthentication = snapshot => {
       const value = snapshot.val()
       if (typeof value === 'object') {
-        const clientData = value.find(clientItem => clientItem.leaf === client)
+        const clientData = value.filter(Boolean).find(clientItem => clientItem.leaf === client)
         const isPasswordProtected = clientData && clientData.password && clientData.password.toString() !== ''
         if (isPasswordProtected && clientData.password.toString() === password.toString()) {
           delete clientData.password

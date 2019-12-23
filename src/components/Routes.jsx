@@ -32,7 +32,7 @@ export default function Routes ({ pages }) {
           <Page {...page} />
         </Route>
       ))}
-      <Route path='/'><Page {...homePage} key={homePage.id} /></Route>
+      <Route path={['/', `/${homePage.url}`]}><Page {...homePage} key={homePage.id} /></Route>
     </Switch>
   )
 }
