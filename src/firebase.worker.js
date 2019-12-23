@@ -18,7 +18,10 @@ const config = {
   messagingSenderId: '985773592777',
   appId: '1:985773592777:web:975852c9b59a2bcc8ffd18'
 }
-
+if (!self.firebase) {
+  console.warn('🔥 Firebase WebWorker initialization failed')
+  return
+}
 self.firebase.initializeApp(config)
 const database = self.firebase.database()
 const spreadsheet = process.env.SPREADSHEET_ID

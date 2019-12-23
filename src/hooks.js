@@ -10,7 +10,7 @@ import { useLocation } from 'react-router-dom'
 
 // eslint-disable-next-line
 const worker = new Worker('./firebase.worker.js')
-const enableCaching = true
+const enableCaching = process.env.NODE_ENV === 'production'
 console.assert(enableCaching, 'Caching is disabled')
 
 export function usePages ({ client = 'Default', enableCache = enableCaching, analytics } = {}) {
@@ -21,7 +21,7 @@ export function usePages ({ client = 'Default', enableCache = enableCaching, ana
   }
   const cached = window.localStorage.getItem(client)
   const useCache = enableCache && cached
-  const initialValue = useCache ? JSON.parse(cached) : undefined
+  const initialValue = useCache ? JSON.parse(cached) : []
   const [pages, setPages] = useState(initialValue)
   const previousValue = useRef(useCache)
 
@@ -69,7 +69,7 @@ export function useComponents ({ enableCache = enableCaching, analytics } = {}) 
   const action = 'components'
   const cached = window.localStorage.getItem(action)
   const useCache = enableCache && cached
-  const initialValue = useCache ? JSON.parse(cached) : undefined
+  const initialValue = useCache ? JSON.parse(cached) : []
   const [components, setComponents] = useState(initialValue)
   const previousValue = useRef(useCache)
 
