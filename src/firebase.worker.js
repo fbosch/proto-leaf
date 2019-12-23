@@ -28,10 +28,15 @@ console.info('🔥 Initialized Firbase WebWorker')
 self.addEventListener('message', event => {
   const { action, ...rest } = event.data
   switch (action) {
+    case 'authenticate': return authenticate(rest)
     case 'components': return subscribeToComponents(rest)
     case 'pages': return subscribeToPages(rest)
   }
 })
+
+function authenticate ({ client, password }) {
+  console.log(client, password)
+}
 
 function formatComponentProperties (component) {
   const formattedComponent = omitBy(component, isEmpty)

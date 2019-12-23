@@ -8,7 +8,6 @@ import PageContext from '../contexts/PageContext'
 import PageNotFound from './PageNotFound'
 import camelCase from 'lodash/camelCase'
 import isArray from 'lodash/isArray'
-import kebabCase from 'lodash/kebabCase'
 import some from 'lodash/_arraySome'
 import { useComponent } from '../hooks'
 import { useLocation } from 'react-router'
@@ -21,7 +20,7 @@ function isEditorial (row, data) {
 }
 
 export default function Page (props) {
-  const { components, name } = props
+  const { components, name, id } = props
   const location = useLocation()
   const pages = useContext(PageContext)
   const componentsData = useContext(ComponentsContext)
@@ -58,7 +57,7 @@ export default function Page (props) {
     </main>
   ], [layoutComponentsWithoutMenuAndFooter, editorialComponentRows])
 
-  if (!pages.find(page => kebabCase(page.name) === location.pathname.replace('/', '')) && !isOnHomepage) return <PageNotFound />
+  if (!pages.find(page => page.id === id) && !isOnHomepage) return <PageNotFound />
 
   return (
     <>

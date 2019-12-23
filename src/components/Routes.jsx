@@ -28,7 +28,7 @@ export default function Routes ({ pages }) {
   return (
     <Switch>
       {rest.map(page => (
-        <Route path={`/${page.url}`} key={page.id}>
+        <Route path={[`/${page.url}`, `/${page.id}`]} key={page.id}>
           <Page {...page} key={page.id} />
         </Route>
       ))}

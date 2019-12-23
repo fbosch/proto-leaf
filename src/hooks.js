@@ -1,10 +1,11 @@
-import React, { Fragment, lazy, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import React, { Fragment, lazy, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import ComponentsContext from './contexts/ComponentsContext'
 import PageContext from './contexts/PageContext'
 import { getAsyncComponent } from './components'
 import isEmpty from 'lodash/isEmpty'
-import kebabCase from 'lodash/kebabCase'
+import isNumber from 'lodash/isNumber'
+import toInteger from 'lodash/toInteger'
 import { useLocation } from 'react-router-dom'
 
 // eslint-disable-next-line
@@ -49,10 +50,18 @@ export function usePages ({ client = 'Default', enableCache = enableCaching, ana
 
 export function useCurrentPage () {
   const pages = useContext(PageContext)
+  const [homePage, ...rest] = pages
   const location = useLocation()
-  const routeId = location.pathname.replace('/', '')
-  const currentPage = pages && pages.find(page => routeId === '' ? page.id === 1 : kebabCase(page.name) === routeId)
-  return currentPage
+  const path = useMemo(() => location.pathname.replace('/', ''), [location])
+  const locationId = useMemo(() => toInteger(path), [path])
+  const hasId = useMemo(() => isNumber(locationId) && locationId !== 0, [locationId])
+  if (hasId) {
+    return rest.find(page => toInteger(page.id) === locationId)
+  }
+  if (path) {
+    return rest.find(page => page.url === path)
+  }
+  return homePage
 }
 
 // subscribe to the list of spreadsheet components
