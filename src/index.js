@@ -16,7 +16,7 @@ import startCase from 'lodash/startCase'
 
 document.title = startCase(camelCase(window.location.pathname.replace('/', '')))
 
-if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('service-worker.js')
   })

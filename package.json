@@ -18,9 +18,7 @@
     ],
     "swSrc": "./src/service-worker.js",
     "templatedURLs": {
-      "/": [
-        "index.html"
-      ]
+      "/": ["index.html"]
     }
   },
   "scripts": {
