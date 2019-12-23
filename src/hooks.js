@@ -16,21 +16,27 @@ const worker = new Worker('./firebase.worker.js')
 const enableCaching = process.env.NODE_ENV === 'production'
 console.assert(enableCaching, 'Caching is disabled')
 
-export function useAuthentication ({ client }) {
+export function useAuthentication ({ client, enableCache = enableCaching }) {
   const action = 'authenticate'
+  const cached = window.localStorage.getItem('leafs')
+  const useCache = enableCache && cached
   const clientIdentifier = md5(client + '🍃')
   const cachedAuthentication = Boolean(Cookies.get(clientIdentifier))
   const [authenticated, setAuthenticated] = useState(client === 'Default' || cachedAuthentication)
+  const [clientLeafs, setClientLeafs] = useState(useCache ? JSON.parse(cached) : [])
   const authenticate = useCallback(password => worker.postMessage({ action, client, password }), [client])
 
   useEffect(() => {
     function authenticationListener (event) {
-      const { action, id, ...rest } = event.data
+      const { action, id, leafs } = event.data
       if (action === 'authenticate') {
         if (id) {
-          console.log(rest)
-          Cookies.set(clientIdentifier, true, { expires: 3 })
           setAuthenticated(true)
+          setClientLeafs(leafs)
+          window.requestIdleCallback(() => {
+            Cookies.set(clientIdentifier, true, { expires: 3 })
+            window.localStorage.setItem('leafs', JSON.stringify(leafs))
+          })
         } else {
           setAuthenticated(false)
         }
@@ -40,7 +46,7 @@ export function useAuthentication ({ client }) {
     return () => worker.removeEventListener('message', authenticationListener)
   }, [client, authenticated])
 
-  return [authenticated, authenticate]
+  return { authenticated, authenticate, clientLeafs }
 }
 
 export function usePages ({ client = 'Default', enableCache = enableCaching } = {}) {

@@ -13,13 +13,10 @@ exports.authenticate = functions.https.onCall(data => {
       const value = snapshot.val()
       if (value) {
         let values = value.filter(Boolean)
-          .map(clientItem => {
-            clientItem.leaf = clientItem.leaf.toLowerCase()
-            return clientItem
-          })
         const clientData = values.find(clientItem => clientItem && clientItem.leaf === client.toLowerCase())
         const isPasswordProtected = clientData && clientData.password && clientData.password.toString() !== ''
         if (isPasswordProtected && clientData.password.toString() === password.toString()) {
+          // remove blacklisted keys to prevent them from getting sent to the client (such as passwords)
           values = values.map(clientItem => {
             Object.keys(clientItem)
               .filter(key => blacklist.includes(key))

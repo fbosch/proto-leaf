@@ -31,7 +31,7 @@ document.addEventListener('load', () => {
 const client = getClient()
 
 function App () {
-  const [authenticated, authenticate] = useAuthentication({ client })
+  const { authenticated, authenticate } = useAuthentication({ client })
 
   useEffect(() => {
     if (authenticated === false) authenticate(window.prompt('Enter Password'))
