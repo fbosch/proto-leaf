@@ -11,12 +11,14 @@ export default function Spot ({ useBackground = false, ...rest }) {
     image, type, richContent, ctaText, ctaUrl, linkText, linkUrl, price,
     headingOne, headingTwo, headingThree, description, teaser, component
   } = rest
+
   const hasVideo = component && component.includes('video') && image
   const anyTextContent = some([richContent, ctaText, linkText, headingOne, headingTwo, headingThree], Boolean)
   const isProduct = (component && component.includes('Product')) || type.toLowerCase() === 'shop'
   const isProductHighlight = isProduct && component.includes('highlight')
   const hasBackground = (type.includes('background') || useBackground || isProductHighlight) && image
   const ctaColor = isProduct ? 'blue' : 'orange'
+
   return (
     <Card className={classNames('spot', { 'has-background': hasBackground, product: isProduct })} title={description}>
       {hasVideo === false && image && hasBackground === false && <Image src={image} alt={teaser} />}

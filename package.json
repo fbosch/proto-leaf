@@ -14,7 +14,7 @@
     "clearDist": true,
     "globDirectory": "./dist",
     "globPatterns": [
-      "**/*.{html,js,css,jpg,png,gif,svg,eot,ttf,woff,woff2}"
+      "**/*.{js,css,jpg,png,gif,svg,eot,ttf,woff,woff2}"
     ],
     "swSrc": "./src/service-worker.js",
     "templatedURLs": {

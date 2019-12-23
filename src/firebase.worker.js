@@ -98,7 +98,7 @@ function subscribeToPages ({ client, cache }) {
   pagesRef.on('value', snapshot => {
     const pages = snapshot.val()
     if (!pages) {
-      console.warn(`No data received from "${client}" spreadsheet`)
+      console.warn(`No data received from "${client}" spreadsheet. It might not exist yet.`)
       return
     }
     const value = format(pages)
