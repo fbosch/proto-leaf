@@ -17,15 +17,13 @@ export function usePages ({ client = 'Default', enableCache = enableCaching, ana
   if (client === 'Default') {
     window.localStorage.removeItem('client')
   } else {
-    if (process.env.NODE_ENV === 'production') {
-      worker.postMessage({ action: 'authenticate', client, password: 1234 })
-      const authenticationListener = worker.addEventListener(({ action, ...rest }) => {
-        if (action === 'authenticate') {
-          console.log(rest)
-          worker.removeEventListener(authenticationListener)
-        }
-      })
-    }
+    worker.postMessage({ action: 'authenticate', client, password: 1234 })
+    const authenticationListener = worker.addEventListener('message', ({ action, ...rest }) => {
+      if (action === 'authenticate') {
+        console.log(rest)
+        worker.removeEventListener(authenticationListener)
+      }
+    })
     window.localStorage.setItem('client', client)
   }
   const cached = window.localStorage.getItem(client)

@@ -40,7 +40,7 @@ const parameters = queryString.parse(window.location.search)
 const validClientName = parameters.client && !parameters.client.includes('.') && parameters.client !== 'default'
 const client = (validClientName ? parameters.client : undefined) ||
  (
-   ['default', ''].includes(parameters.client)
+   ['default', '', 'Leafs'].includes(parameters.client)
      ? 'Default'
      : window.localStorage.getItem('client') || 'Default'
  )
