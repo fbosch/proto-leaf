@@ -12,13 +12,16 @@
   "cache": {
     "strategy": "inject",
     "clearDist": true,
+    "navigateFallback":"./dist/index.html",
     "globDirectory": "./dist",
     "globPatterns": [
       "**/*.{html,js,css,jpg,png,gif,svg,eot,ttf,woff,woff2}"
     ],
     "swSrc": "./src/service-worker.js",
     "templatedURLs": {
-      "/": ["index.html"]
+      "/": [
+        "index.html"
+      ]
     }
   },
   "scripts": {
