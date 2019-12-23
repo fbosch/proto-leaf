@@ -15,7 +15,6 @@ exports.authenticate = functions.https.onCall(data => {
         const isPasswordProtected = clientData && clientData.password && clientData.password.toString() !== ''
         if (isPasswordProtected && clientData.password.toString() === password.toString()) {
           delete clientData.password
-          delete clientData.leaf
           delete clientData.url
           resolve(clientData)
         }
@@ -25,7 +24,6 @@ exports.authenticate = functions.https.onCall(data => {
       }
       leafs.off('value', handleAuthentication)
     }
-
     leafs.on('value', handleAuthentication)
   })
 })

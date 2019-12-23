@@ -5,6 +5,7 @@ import every from 'lodash/every'
 import isEmpty from 'lodash/isEmpty'
 import memoize from 'lodash/memoize'
 import omitBy from 'lodash/omitBy'
+import toInteger from 'lodash/toInteger'
 
 importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js')
 importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-functions.js')
@@ -49,6 +50,14 @@ function authenticate ({ client, password, spreadsheet = mainSheet }) {
 function formatComponentProperties (component) {
   const formattedComponent = omitBy(component, isEmpty)
   Object.keys(formattedComponent).forEach(key => {
+    if (key.toLowerCase().includes('url')) {
+      formattedComponent[key] = formattedComponent[key].toString()
+      return
+    }
+    if (['parent', 'id'].includes(key)) {
+      formattedComponent[key] = toInteger(formattedComponent[key])
+      return
+    }
     if (typeof formattedComponent[key] === 'string') {
       formattedComponent[key].trim()
     }
