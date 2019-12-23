@@ -33,19 +33,15 @@ window.firebase.initializeApp({
 
 const analytics = window.firebase.analytics()
 const parameters = queryString.parse(window.location.search)
-console.log(parameters)
 
 const validClientName = parameters.client && !parameters.client.includes('.') && parameters.client !== 'default'
 
-const client = (validClientName
-  ? parameters.client : undefined) ||
-  (['default', ''].includes(parameters.client)
-    ? 'Default'
-    : window.localStorage.getItem('client') || 'Default')
-
-if (validClientName === false) {
-  console.warn(`Provided client name "${parameters.client}" is invalid, Client Spreadsheets cannot have a "." in their name. Fallback client "${client}" is loaded.`)
-}
+const client = (validClientName ? parameters.client : undefined) ||
+ (
+   ['default', ''].includes(parameters.client)
+     ? 'Default'
+     : window.localStorage.getItem('client') || 'Default'
+ )
 
 function App () {
   const pages = usePages({ analytics, client })
@@ -64,3 +60,14 @@ function App () {
 }
 
 ReactDOM.render(<App />, document.getElementById('root'))
+
+if (validClientName === false) {
+  console.warn(
+  `Provided client name "${parameters.client}" is invalid.
+                          ⇧
+
+  🔴 Client Spreadsheets cannot have a "." in their name.
+  🔵 Fallback client "${client}" is loaded.
+  `
+  )
+}
