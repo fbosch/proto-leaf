@@ -12,7 +12,7 @@ const worker = new Worker('./firebase.worker.js')
 const enableCaching = true
 console.assert(enableCaching, 'Caching is disabled')
 
-export function usePages ({ client = 'Default', enableCache = enableCaching } = {}) {
+export function usePages ({ client = 'Default', enableCache = enableCaching, analytics } = {}) {
   const cached = window.localStorage.getItem(client)
   const useCache = enableCache && cached
   const initialValue = useCache ? JSON.parse(cached) : undefined
@@ -24,6 +24,7 @@ export function usePages ({ client = 'Default', enableCache = enableCaching } = 
     worker.postMessage({ action, client, cache: useCache ? cached : null })
     const listener = worker.addEventListener('message', event => {
       if (event.data.action === action) {
+        analytics && analytics.logEvent('updated pages from firebase in a webworker')
         if (previousValue.current !== event.data.value) {
           const newValue = JSON.parse(event.data.value)
           setPages(newValue)
@@ -50,7 +51,7 @@ export function useCurrentPage () {
 }
 
 // subscribe to the list of spreadsheet components
-export function useComponents ({ enableCache = enableCaching } = {}) {
+export function useComponents ({ enableCache = enableCaching, analytics } = {}) {
   const action = 'components'
   const cached = window.localStorage.getItem(action)
   const useCache = enableCache && cached
@@ -62,6 +63,7 @@ export function useComponents ({ enableCache = enableCaching } = {}) {
     worker.postMessage({ action, cache: useCache ? cached : null })
     const listener = worker.addEventListener('message', event => {
       if (event.data.action === action) {
+        analytics && analytics.logEvent('updated components from firebase in a webworker')
         if (previousValue.current !== event.data.value) {
           const newValue = JSON.parse(event.data.value)
           setComponents(newValue)

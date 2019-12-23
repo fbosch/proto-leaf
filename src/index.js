@@ -22,9 +22,19 @@ if ('serviceWorker' in navigator) {
   })
 }
 
+window.firebase.initializeApp({
+  apiKey: process.env.FIREBASE_APIKEY,
+  projectId: 'protoleaf-6fbe1',
+  messagingSenderId: '985773592777',
+  appId: '1:985773592777:web:975852c9b59a2bcc8ffd18',
+  measurementId: 'G-RMTQBWLYXN'
+})
+
+const analytics = window.firebase.analytics()
+
 function App () {
-  const pages = usePages()
-  const components = useComponents()
+  const pages = usePages({ analytics })
+  const components = useComponents({ analytics })
   return (
     <LayoutProvider>
       <PageProvider value={pages}>

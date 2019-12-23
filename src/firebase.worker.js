@@ -6,14 +6,6 @@ import isEmpty from 'lodash/isEmpty'
 import memoize from 'lodash/memoize'
 import omitBy from 'lodash/omitBy'
 
-self.addEventListener('message', event => {
-  const { action, ...rest } = event.data
-  switch (action) {
-    case 'components': return subscribeToComponents(rest)
-    case 'pages': return subscribeToPages(rest)
-  }
-})
-
 importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js')
 importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js')
 
@@ -24,8 +16,7 @@ const config = {
   projectId: 'protoleaf-6fbe1',
   storageBucket: 'protoleaf-6fbe1.appspot.com',
   messagingSenderId: '985773592777',
-  appId: '1:985773592777:web:975852c9b59a2bcc8ffd18',
-  measurementId: 'G-RMTQBWLYXN'
+  appId: '1:985773592777:web:975852c9b59a2bcc8ffd18'
 }
 
 self.firebase.initializeApp(config)
@@ -33,6 +24,14 @@ const database = self.firebase.database()
 const spreadsheet = process.env.SPREADSHEET_ID
 
 console.info('🔥 Initialized Firbase WebWorker')
+
+self.addEventListener('message', event => {
+  const { action, ...rest } = event.data
+  switch (action) {
+    case 'components': return subscribeToComponents(rest)
+    case 'pages': return subscribeToPages(rest)
+  }
+})
 
 function formatComponentProperties (component) {
   const formattedComponent = omitBy(component, isEmpty)
