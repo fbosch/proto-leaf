@@ -71,6 +71,7 @@
     "lodash": "^4.17.15",
     "lodash-es": "^4.17.15",
     "modern-normalize": "^0.5.0",
+    "query-string": "^6.9.0",
     "react-helmet": "^5.2.1",
     "react-lite-youtube-embed": "^0.1.5-1",
     "react-router-dom": "^5.1.2",

@@ -12,11 +12,12 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import Routes from './components/Routes'
 import camelCase from 'lodash/camelCase'
+import queryString from 'query-string'
 import startCase from 'lodash/startCase'
 
 document.title = startCase(camelCase(window.location.pathname.replace('/', '')))
 
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('service-worker.js')
   })
@@ -31,9 +32,11 @@ window.firebase.initializeApp({
 })
 
 const analytics = window.firebase.analytics()
+const paremeters = queryString.parse(window.location.search)
+const client = paremeters.client || window.localStorage.getItem('client') || 'Default'
 
 function App () {
-  const pages = usePages({ analytics })
+  const pages = usePages({ analytics, client })
   const components = useComponents({ analytics })
   return (
     <PageProvider value={pages}>

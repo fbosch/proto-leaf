@@ -56,12 +56,15 @@ function formatComponents (components) {
 function subscribeToComponents ({ cache }) {
   let initialized = false
   const format = memoize(formatComponents)
-  console.info('✔️ Subscribed to Components Spreadsheet')
+  console.info('✔️ Subscribed to "Components" spreadsheet')
 
   const componentsRef = database.ref(`/${spreadsheet}/Components`)
   componentsRef.on('value', snapshot => {
     const components = snapshot.val()
-    if (!components) return
+    if (!components) {
+      console.warn('No data received from "Components" spreadsheet')
+      return
+    }
     // remove unused and empty properties and format naming to fit componentMap
     const value = format(components)
     if (value === cache && initialized === false) {
@@ -89,12 +92,15 @@ function formatPages (pages) {
 function subscribeToPages ({ client, cache }) {
   let initialized = false
   const format = memoize(formatPages)
-  console.info('✔️ Subscribed to Pages Spreadsheet')
+  console.info(`✔️ Subscribed to "${client}" spreadsheet`)
 
   const pagesRef = database.ref(`/${spreadsheet}${client ? '/' + client : ''}`)
   pagesRef.on('value', snapshot => {
     const pages = snapshot.val()
-    if (!pages) return
+    if (!pages) {
+      console.warn(`No data received from "${client}" spreadsheet`)
+      return
+    }
     const value = format(pages)
     if (value === cache && initialized === false) {
       initialized = true

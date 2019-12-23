@@ -13,6 +13,11 @@ const enableCaching = true
 console.assert(enableCaching, 'Caching is disabled')
 
 export function usePages ({ client = 'Default', enableCache = enableCaching, analytics } = {}) {
+  if (client === 'Default') {
+    window.localStorage.removeItem('client')
+  } else {
+    window.localStorage.setItem('client', client)
+  }
   const cached = window.localStorage.getItem(client)
   const useCache = enableCache && cached
   const initialValue = useCache ? JSON.parse(cached) : undefined
