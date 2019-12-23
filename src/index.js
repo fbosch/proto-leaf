@@ -1,5 +1,4 @@
 import './styles/main.scss'
-import 'loading-attribute-polyfill'
 
 import React, { useEffect } from 'react'
 

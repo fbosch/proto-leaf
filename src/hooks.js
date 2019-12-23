@@ -82,12 +82,12 @@ export function usePages ({ client = 'Default', enableCache = enableCaching } = 
 
 export function useCurrentPage () {
   const pages = useContext(PageContext)
-  const [homePage, ...rest] = pages
+  const [homePage] = pages
   const location = useLocation()
   const path = useMemo(() => location.pathname.replace('/', ''), [location])
   const locationId = useMemo(() => toInteger(path), [path])
   const hasId = useMemo(() => isNumber(locationId) && locationId !== 0, [locationId])
-  if (hasId) return rest.find(page => toInteger(page.id) === locationId)
+  if (hasId) return pages.find(page => toInteger(page.id) === locationId)
   if (path) return pages.find(page => page.url === path)
   return homePage
 }

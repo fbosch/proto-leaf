@@ -39,7 +39,6 @@ export default function GlobalMenu () {
 
   const getSubMenuItems = useCallback(link => {
     const childLinks = sortBy(subMenuLinks.filter(subLink => toNumber(subLink.parent) === toNumber(link.id)), 'sortOrder')
-    console.log(childLinks)
     if (isEmpty(childLinks) === false) {
       return (
         <Menu key={link.id + 'menu'}>
