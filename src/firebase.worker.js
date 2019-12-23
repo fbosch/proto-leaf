@@ -44,7 +44,12 @@ function authenticate ({ client, password, spreadsheet = mainSheet }) {
   const action = 'authenticate'
   const auth = self.functions.httpsCallable('authenticate')
   auth({ client, password, spreadsheet })
-    .then(result => result && result.data && self.postMessage({ action, ...result.data }))
+    .then(result => {
+      if (result && result.data) {
+        console.log('🔓 Authenticated')
+        self.postMessage({ action, ...result.data })
+      }
+    })
     .catch(console.error)
 }
 
