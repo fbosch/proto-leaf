@@ -21,32 +21,29 @@ const config = {
   appId: '1:985773592777:web:975852c9b59a2bcc8ffd18'
 }
 
+self.addEventListener('message', event => {
+  const { action, ...rest } = event.data
+  switch (action) {
+    case 'authenticate': return authenticate(rest)
+    case 'components': return subscribeToComponents(rest)
+    case 'pages': return subscribeToPages(rest)
+  }
+})
 if (self.firebase) {
   console.info('🔥 Initialized FireBase WebWorker')
   self.app = self.firebase.initializeApp(config)
   self.database = self.firebase.database()
   self.functions = self.app.functions('europe-west1')
-
-  self.addEventListener('message', event => {
-    const { action, ...rest } = event.data
-    switch (action) {
-      case 'authenticate': return authenticate(rest)
-      case 'components': return subscribeToComponents(rest)
-      case 'pages': return subscribeToPages(rest)
-    }
-  })
 } else {
   console.error('🔥 FireBase WebWorker Initialization Failed')
 }
 
 function authenticate ({ client, password, spreadsheet = mainSheet }) {
+  const action = 'authenticate'
   const auth = self.functions.httpsCallable('authenticate')
-  auth({ client, password, spreadsheet }).then(result => {
-    console.log('auth result', result)
-    if (result) self.postMessage('authenticate', result)
-  }).catch(error => {
-    console.error(error)
-  })
+  auth({ client, password, spreadsheet })
+    .then(result => result && result.data && self.postMessage({ action, ...result.data }))
+    .catch(console.error)
 }
 
 function formatComponentProperties (component) {

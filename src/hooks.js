@@ -1,10 +1,13 @@
 import React, { Fragment, lazy, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
+import AuthenticationContext from './contexts/AuthenticationContext'
 import ComponentsContext from './contexts/ComponentsContext'
+import Cookies from 'js-cookie'
 import PageContext from './contexts/PageContext'
 import { getAsyncComponent } from './components'
 import isEmpty from 'lodash/isEmpty'
 import isNumber from 'lodash/isNumber'
+import md5 from 'md5'
 import toInteger from 'lodash/toInteger'
 import { useLocation } from 'react-router-dom'
 
@@ -13,27 +16,52 @@ const worker = new Worker('./firebase.worker.js')
 const enableCaching = process.env.NODE_ENV === 'production'
 console.assert(enableCaching, 'Caching is disabled')
 
-export function usePages ({ client = 'Default', enableCache = enableCaching, analytics } = {}) {
-  if (client === 'Default') {
-    window.localStorage.removeItem('client')
-  } else {
-    worker.postMessage({ action: 'authenticate', client, password: 1234 })
-    const authenticationListener = worker.addEventListener('message', ({ action, ...rest }) => {
+export function useAuthentication ({ client }) {
+  const action = 'authenticate'
+  const clientIdentifier = md5(client + '🍃')
+  const cachedAuthentication = Boolean(Cookies.get(clientIdentifier))
+  const [authenticated, setAuthenticated] = useState(client === 'Default' || cachedAuthentication)
+  const authenticate = useCallback(password => worker.postMessage({ action, client, password }), [client])
+
+  useEffect(() => {
+    if (authenticated) return
+    const authenticationListener = event => {
+      const { action, id } = event.data
       if (action === 'authenticate') {
-        console.log(rest)
-        worker.removeEventListener(authenticationListener)
+        console.log(event.data)
+        if (id) {
+          Cookies.set(clientIdentifier, true, { expires: 3 })
+          setAuthenticated(true)
+        } else {
+          setAuthenticated(false)
+        }
       }
-    })
-    window.localStorage.setItem('client', client)
-  }
+    }
+    worker.addEventListener('message', authenticationListener)
+    return () => worker.removeEventListener('message', authenticationListener)
+  }, [client, authenticated])
+
+  return [authenticated, authenticate]
+}
+
+export function usePages ({ client = 'Default', enableCache = enableCaching, analytics } = {}) {
+  const authenticated = useContext(AuthenticationContext)
   const cached = window.localStorage.getItem(client)
   const useCache = enableCache && cached
   const initialValue = useCache ? JSON.parse(cached) : []
   const [pages, setPages] = useState(initialValue)
   const previousValue = useRef(useCache)
 
+  if (client === 'Default') {
+    window.localStorage.removeItem('client')
+  } else {
+    window.localStorage.setItem('client', client)
+  }
+
   useEffect(() => {
+    if (authenticated === false) return
     const action = 'pages'
+
     worker.postMessage({ action, client, cache: useCache ? cached : null })
     const listener = worker.addEventListener('message', event => {
       if (event.data.action === action) {
@@ -50,7 +78,7 @@ export function usePages ({ client = 'Default', enableCache = enableCaching, ana
       }
     })
     return () => worker.removeEventListener('message', listener)
-  }, [previousValue])
+  }, [previousValue, authenticated])
 
   return pages
 }
@@ -62,12 +90,8 @@ export function useCurrentPage () {
   const path = useMemo(() => location.pathname.replace('/', ''), [location])
   const locationId = useMemo(() => toInteger(path), [path])
   const hasId = useMemo(() => isNumber(locationId) && locationId !== 0, [locationId])
-  if (hasId) {
-    return rest.find(page => toInteger(page.id) === locationId)
-  }
-  if (path) {
-    return pages.find(page => page.url === path)
-  }
+  if (hasId) return rest.find(page => toInteger(page.id) === locationId)
+  if (path) return pages.find(page => page.url === path)
   return homePage
 }
 

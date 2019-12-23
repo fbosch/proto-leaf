@@ -11,22 +11,21 @@ exports.authenticate = functions.https.onCall(data => {
     const handleAuthentication = snapshot => {
       const value = snapshot.val()
       if (typeof value === 'object') {
-        const clientData = value.filter(Boolean).find(clientItem => clientItem.leaf === client)
+        const clientData = value.filter(Boolean).find(clientItem => clientItem && clientItem.leaf === client)
         const isPasswordProtected = clientData && clientData.password && clientData.password.toString() !== ''
         if (isPasswordProtected && clientData.password.toString() === password.toString()) {
           delete clientData.password
-          delete clientData.id
           delete clientData.leaf
-          leafs.off(handleAuthentication)
-          return resolve(clientData)
+          delete clientData.url
+          resolve(clientData)
         }
-        leafs.off(handleAuthentication)
-        return resolve(null)
+        resolve(null)
       } else {
-        leafs.off(handleAuthentication)
         reject(new Error('No leaf 🍂'))
       }
+      leafs.off('value', handleAuthentication)
     }
+
     leafs.on('value', handleAuthentication)
   })
 })
