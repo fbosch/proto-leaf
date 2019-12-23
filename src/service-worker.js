@@ -41,15 +41,7 @@ if (self.workbox) {
     // Use the cache if it's available.
     new self.workbox.strategies.CacheFirst({
       // Use a custom cache name.
-      cacheName: 'image-cache',
-      plugins: [
-        new self.workbox.expiration.Plugin({
-          // Cache only 20 images.
-          maxEntries: 20,
-          // Cache for a maximum of a week.
-          maxAgeSeconds: 7 * 24 * 60 * 60
-        })
-      ]
+      cacheName: 'image-cache'
     })
   )
 } else {
