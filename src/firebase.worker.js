@@ -7,6 +7,7 @@ import memoize from 'lodash/memoize'
 import omitBy from 'lodash/omitBy'
 
 importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js')
+importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-functions.js')
 importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js')
 
 const spreadsheet = process.env.SPREADSHEET_ID
@@ -22,23 +23,31 @@ const config = {
 
 if (self.firebase) {
   console.info('🔥 Initialized Firbase WebWorker')
-  self.firebase.initializeApp(config)
+  self.app = self.firebase.initializeApp(config)
   self.database = self.firebase.database()
+  self.functions = self.app.functions('europe-west1')
+
+  self.addEventListener('message', event => {
+    const { action, ...rest } = event.data
+    switch (action) {
+      case 'authenticate': return authenticate(rest)
+      case 'components': return subscribeToComponents(rest)
+      case 'pages': return subscribeToPages(rest)
+    }
+  })
 } else {
   console.warn('🔥 Firebase WebWorker initialization failed')
 }
 
-self.addEventListener('message', event => {
-  const { action, ...rest } = event.data
-  switch (action) {
-    case 'authenticate': return authenticate(rest)
-    case 'components': return subscribeToComponents(rest)
-    case 'pages': return subscribeToPages(rest)
-  }
-})
-
 function authenticate ({ client, password }) {
   console.log(client, password)
+  console.log(self.functions)
+  const auth = self.functions.httpsCallable('authenticate')
+  auth({ client, password }).then((result) => {
+    console.log(result)
+  }).catch(error => {
+    console.error(error)
+  })
 }
 
 function formatComponentProperties (component) {

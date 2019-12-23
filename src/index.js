@@ -17,25 +17,27 @@ import startCase from 'lodash/startCase'
 
 document.title = startCase(camelCase(window.location.pathname.replace('/', '')))
 
-if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js')
-  })
-}
+let analytics
+document.addEventListener('load', () => {
+  if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+    })
+  }
 
-window.firebase.initializeApp({
-  apiKey: process.env.FIREBASE_APIKEY,
-  projectId: 'protoleaf-6fbe1',
-  messagingSenderId: '985773592777',
-  appId: '1:985773592777:web:975852c9b59a2bcc8ffd18',
-  measurementId: 'G-RMTQBWLYXN'
+  window.firebase.initializeApp({
+    apiKey: process.env.FIREBASE_APIKEY,
+    projectId: 'protoleaf-6fbe1',
+    messagingSenderId: '985773592777',
+    appId: '1:985773592777:web:975852c9b59a2bcc8ffd18',
+    measurementId: 'G-RMTQBWLYXN'
+  })
+
+  analytics = window.firebase.analytics()
 })
 
-const analytics = window.firebase.analytics()
 const parameters = queryString.parse(window.location.search)
-
 const validClientName = parameters.client && !parameters.client.includes('.') && parameters.client !== 'default'
-
 const client = (validClientName ? parameters.client : undefined) ||
  (
    ['default', ''].includes(parameters.client)

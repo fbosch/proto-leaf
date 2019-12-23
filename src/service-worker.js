@@ -12,11 +12,7 @@ if (self.workbox) {
     new self.workbox.strategies.CacheFirst()
   )
   self.workbox.routing.registerRoute(
-    'https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js',
-    new self.workbox.strategies.CacheFirst()
-  )
-  self.workbox.routing.registerRoute(
-    'https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js',
+    new RegExp('https://www.gstatic.com/firebasejs/'),
     new self.workbox.strategies.CacheFirst()
   )
   self.workbox.routing.registerRoute(

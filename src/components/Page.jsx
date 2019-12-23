@@ -1,15 +1,14 @@
 import React, { Suspense, useContext, useMemo } from 'react'
+import { useComponent, useCurrentPage } from '../hooks'
 
 import ComponentsContext from '../contexts/ComponentsContext'
 import { Container } from 'semantic-ui-react'
 import Helmet from 'react-helmet'
 import LoadingIndicator from './LoadingIndicator'
-import PageContext from '../contexts/PageContext'
 import PageNotFound from './PageNotFound'
 import camelCase from 'lodash/camelCase'
 import isArray from 'lodash/isArray'
 import some from 'lodash/_arraySome'
-import { useComponent } from '../hooks'
 import { useLocation } from 'react-router'
 
 function isEditorial (row, data) {
@@ -20,9 +19,9 @@ function isEditorial (row, data) {
 }
 
 export default function Page (props) {
-  const { components, name, id } = props
+  const { components, name } = props
   const location = useLocation()
-  const pages = useContext(PageContext)
+  const currentPage = useCurrentPage()
   const componentsData = useContext(ComponentsContext)
   const getComponent = useComponent({ name }) // page data passed to components
   const isOnHomepage = useMemo(() => location.pathname === '/', [location])
@@ -57,7 +56,7 @@ export default function Page (props) {
     </main>
   ], [layoutComponentsWithoutMenuAndFooter, editorialComponentRows])
 
-  if (!pages.find(page => page.id === id) && !isOnHomepage) return <PageNotFound />
+  if (!currentPage && !isOnHomepage) return <PageNotFound />
 
   return (
     <>
