@@ -17,17 +17,17 @@ export default function GlobalMenu () {
   const topLevelLinks = useMemo(() => links.filter(page => !page.parent || page.parent === ''), [links])
 
   const getAllChildren = useCallback(link => {
-    const children = links.filter(page => link && toNumber(page.parent) === toNumber(link.id))
+    const children = pages.filter(page => link && toNumber(page.parent) === toNumber(link.id))
     if (children) return [...children, ...children.flatMap(getAllChildren)]
     return []
-  }, [links])
+  }, [pages])
 
   const isActive = useCallback(link => {
     const allChildren = getAllChildren(link)
     if (some(allChildren, isActive)) return true
     if (link === currentPage) return true
     return false
-  }, [currentPage])
+  }, [getAllChildren, currentPage])
 
   const activeLevels = useMemo(() => {
     const activeTopLevel = topLevelLinks.find(isActive)
@@ -39,6 +39,7 @@ export default function GlobalMenu () {
 
   const getSubMenuItems = useCallback(link => {
     const childLinks = sortBy(subMenuLinks.filter(subLink => toNumber(subLink.parent) === toNumber(link.id)), 'sortOrder')
+    console.log(childLinks)
     if (isEmpty(childLinks) === false) {
       return (
         <Menu key={link.id + 'menu'}>
@@ -57,7 +58,7 @@ export default function GlobalMenu () {
       )
     }
     return null
-  }, [subMenuLinks])
+  }, [subMenuLinks, currentPage, isActive])
 
   return (
     <nav className='global-menu' key='global-menu' style={{ height: (activeLevels ? 50 + (50 * activeLevels) : 50) + 'px' }}>
