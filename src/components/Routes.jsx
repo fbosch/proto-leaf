@@ -5,7 +5,6 @@ import LayoutContext from '../contexts/LayoutContext'
 import LoadingIndicator from './LoadingIndicator'
 import Page from './Page'
 import isEmpty from 'lodash/isEmpty'
-import kebabCase from 'lodash/kebabCase'
 import memoize from 'lodash/memoize'
 import { useCurrentPage } from '../hooks'
 
@@ -29,7 +28,7 @@ export default function Routes ({ pages }) {
   return (
     <Switch>
       {rest.map(page => (
-        <Route path={`/${kebabCase(page.name)}`} key={page.id}>
+        <Route path={`/${page.url}`} key={page.id}>
           <Page {...page} key={page.id} />
         </Route>
       ))}

@@ -4,7 +4,6 @@ import React, { useCallback, useContext, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import PageContext from '../contexts/PageContext'
 import isEmpty from 'lodash/isEmpty'
-import kebabCase from 'lodash/kebabCase'
 import some from 'lodash/_arraySome'
 import sortBy from 'lodash/sortBy'
 import toNumber from 'lodash/toNumber'
@@ -46,7 +45,7 @@ export default function GlobalMenu (props) {
           {childLinks.map(childLink => (
             [
               <Menu.Item key={link.id + childLink.id} className={isActive(childLink) ? 'active' : ''}>
-                <Link to={'/' + kebabCase(childLink.name)}>
+                <Link to={'/' + childLink.url}>
                   {childLink.name}
                 </Link>
                 {getSubMenuItems(childLink)}
@@ -66,7 +65,7 @@ export default function GlobalMenu (props) {
         <Menu.Item><Link to='/' title='front page'><Icon name='home' /></Link></Menu.Item>
         {topLevelLinks.map(link => [
           <Menu.Item key={link.id} className={isActive(link) ? 'active' : ''}>
-            <Link to={'/' + kebabCase(link.name)}>
+            <Link to={'/' + link.url}>
               {link.name}
             </Link>
           </Menu.Item>,
