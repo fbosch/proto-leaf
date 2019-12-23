@@ -24,11 +24,9 @@ export function useAuthentication ({ client }) {
   const authenticate = useCallback(password => worker.postMessage({ action, client, password }), [client])
 
   useEffect(() => {
-    if (authenticated) return
-    const authenticationListener = event => {
+    function authenticationListener (event) {
       const { action, id } = event.data
       if (action === 'authenticate') {
-        console.log(event.data)
         if (id) {
           Cookies.set(clientIdentifier, true, { expires: 3 })
           setAuthenticated(true)
@@ -45,7 +43,7 @@ export function useAuthentication ({ client }) {
 }
 
 export function usePages ({ client = 'Default', enableCache = enableCaching } = {}) {
-  const authenticated = useContext(AuthenticationContext)
+  const { authenticated } = useContext(AuthenticationContext)
   const cached = window.localStorage.getItem(client)
   const useCache = enableCache && cached
   const initialValue = useCache ? JSON.parse(cached) : []
@@ -61,9 +59,8 @@ export function usePages ({ client = 'Default', enableCache = enableCaching } = 
   useEffect(() => {
     if (authenticated === false) return
     const action = 'pages'
-
     worker.postMessage({ action, client, cache: useCache ? cached : null })
-    const listener = worker.addEventListener('message', event => {
+    function listenForPageChanges (event) {
       if (event.data.action === action) {
         if (previousValue.current !== event.data.value) {
           const newValue = JSON.parse(event.data.value)
@@ -75,8 +72,9 @@ export function usePages ({ client = 'Default', enableCache = enableCaching } = 
         previousValue.current = event.data.value
         enableCache && window.requestIdleCallback(() => window.localStorage.setItem(client, event.data.value))
       }
-    })
-    return () => worker.removeEventListener('message', listener)
+    }
+    worker.addEventListener('message', listenForPageChanges)
+    return () => worker.removeEventListener('message', listenForPageChanges)
   }, [previousValue, authenticated])
 
   return pages
@@ -97,6 +95,8 @@ export function useCurrentPage () {
 // subscribe to the list of spreadsheet components
 export function useComponents ({ enableCache = enableCaching } = {}) {
   const action = 'components'
+  const { authenticated } = useContext(AuthenticationContext)
+
   const cached = window.localStorage.getItem(action)
   const useCache = enableCache && cached
   const initialValue = useCache ? JSON.parse(cached) : []
@@ -104,8 +104,9 @@ export function useComponents ({ enableCache = enableCaching } = {}) {
   const previousValue = useRef(useCache)
 
   useEffect(() => {
+    if (authenticated === false) return
     worker.postMessage({ action, cache: useCache ? cached : null })
-    const listener = worker.addEventListener('message', event => {
+    function listenForComponentChanges (event) {
       if (event.data.action === action) {
         if (previousValue.current !== event.data.value) {
           const newValue = JSON.parse(event.data.value)
@@ -117,9 +118,10 @@ export function useComponents ({ enableCache = enableCaching } = {}) {
         previousValue.current = event.data.value
         enableCache && window.requestIdleCallback(() => window.localStorage.setItem(action, event.data.value))
       }
-    })
-    return () => worker.removeEventListener('message', listener)
-  }, [previousValue])
+    }
+    worker.addEventListener('message', listenForComponentChanges)
+    return () => worker.removeEventListener('message', listenForComponentChanges)
+  }, [previousValue, authenticated])
 
   return components
 }

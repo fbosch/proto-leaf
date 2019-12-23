@@ -2,19 +2,14 @@ import './styles/main.scss'
 import 'loading-attribute-polyfill'
 
 import React, { useEffect } from 'react'
-import { useAuthentication, useComponents, usePages } from './hooks'
 
 import { AuthenticationProvider } from './contexts/AuthenticationContext'
-import { ComponentsProvider } from './contexts/ComponentsContext'
-import ErrorBoundary from './components/ErrorBoundary'
-import Layout from './components/Layout'
-import { LayoutProvider } from './contexts/LayoutContext'
-import { PageProvider } from './contexts/PageContext'
+import PageContents from './components/PageContents'
 import ReactDOM from 'react-dom'
-import Routes from './components/Routes'
 import camelCase from 'lodash/camelCase'
 import queryString from 'query-string'
 import startCase from 'lodash/startCase'
+import { useAuthentication } from './hooks'
 
 document.title = startCase(camelCase(window.location.pathname.replace('/', '')))
 
@@ -45,26 +40,14 @@ const client = (validClientName ? parameters.client : undefined) ||
 
 function App () {
   const [authenticated, authenticate] = useAuthentication({ client })
-  const pages = usePages({ client })
-  const components = useComponents()
+
   useEffect(() => {
-    if (authenticated === false) {
-      const password = window.prompt('Enter Password')
-      authenticate(password)
-    }
+    if (authenticated === false) authenticate(window.prompt('Enter Password'))
   }, [authenticated, authenticate])
 
   return (
     <AuthenticationProvider value={{ authenticated }}>
-      <PageProvider value={pages}>
-        <ComponentsProvider value={components}>
-          <LayoutProvider>
-            <ErrorBoundary>
-              <Layout><Routes pages={pages} /></Layout>
-            </ErrorBoundary>
-          </LayoutProvider>
-        </ComponentsProvider>
-      </PageProvider>
+      <PageContents client={client} />
     </AuthenticationProvider>
   )
 }
