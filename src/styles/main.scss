@@ -181,6 +181,11 @@ main {
 	overflow: hidden;
 	z-index: 1;
 
+	img {
+		object-fit: cover;
+		object-position: center;
+	}
+
 	.price {
 		margin-top: $spacing / 2;
 	}
@@ -248,8 +253,6 @@ main {
 }
 
 .ui.image.spot-background {
-	object-position: center;
-	object-fit: cover;
 	height: 100%;
 	width: 100%;
 	position: absolute;
