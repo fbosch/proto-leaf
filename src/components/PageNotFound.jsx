@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom'
 
 export default function PageNotFound () {
   const history = useHistory()
+  console.log(history)
   const handleGoBack = useCallback(history.goBack, [history])
   return (
     <Segment className='page-not-found' color='red'>

@@ -20,18 +20,20 @@ export default function Routes ({ pages }) {
   useEffect(() => {
     const showGlobalMenu = hasGlobalMenu(currentPage)
     const showFooter = hasFooter(currentPage)
-    layout.setLayout({ showGlobalMenu, showFooter })
+    if (showFooter !== layout.showFooter || showGlobalMenu !== layout.showGlobalMenu) {
+      layout.setLayout({ showGlobalMenu, showFooter })
+    }
   }, [currentPage])
 
   if (isEmpty(pages)) return <LoadingIndicator />
   return (
     <Switch>
       {rest.map(page => (
-        <Route path={`/${kebabCase(page.name)}`} key={page.id + page.name}>
-          <Page {...page} key={page.name} />
+        <Route path={`/${kebabCase(page.name)}`} key={page.id}>
+          <Page {...page} key={page.id} />
         </Route>
       ))}
-      <Route path='/'><Page {...homePage} key={homePage.id + homePage.name} /></Route>
+      <Route path='/'><Page {...homePage} key={homePage.id} /></Route>
     </Switch>
   )
 }

@@ -13,7 +13,7 @@ const sortOptions = [
   { key: 2, text: 'On Sale', value: 'onsale' },
   { key: 3, text: 'Price low to high', value: 'pricelow' },
   { key: 4, text: 'Price high to low', value: 'pricehigh' },
-  { key: 4, text: 'Best sellers', value: 'best' }
+  { key: 5, text: 'Best sellers', value: 'best' }
 ]
 
 const filterOptions = [
@@ -23,7 +23,7 @@ const filterOptions = [
 
 export default function ProductListFilterAndSort (props) {
   return (
-    <Segment.Group horizontal basic className='product-list-filter'>
+    <Segment.Group horizontal className='product-list-filter'>
       <Segment><Header as='h3' textAlign='center'>600 Products</Header></Segment>
       <Segment><Dropdown placeholder='Category' search selection clearable options={categoryOptions} /></Segment>
       <Segment><Dropdown placeholder='Sort by' search selection clearable options={sortOptions} /></Segment>

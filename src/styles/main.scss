@@ -26,7 +26,6 @@
 	z-index: 40;
 	margin: 0 auto;
 	position: relative;
-	transition: height 200ms linear;
 
 	.ui.menu {
 		box-shadow: none;
@@ -81,7 +80,7 @@ main {
 	padding: 30px;
 	margin: 0 auto;
 	opacity: 0;
-	animation: fade-in 300ms ease;
+	animation: fade-in 250ms linear;
 	animation-fill-mode: forwards;
 }
 

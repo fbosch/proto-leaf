@@ -74,6 +74,7 @@
     "react-helmet": "^5.2.1",
     "react-lite-youtube-embed": "^0.1.5-1",
     "react-router-dom": "^5.1.2",
+    "react-router-scroll-memory": "^2.0.5",
     "semantic-ui-react": "^0.88.2"
   }
 }

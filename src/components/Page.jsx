@@ -1,4 +1,4 @@
-import React, { Fragment, Suspense, useContext, useMemo } from 'react'
+import React, { Suspense, useContext, useMemo } from 'react'
 
 import ComponentsContext from '../contexts/ComponentsContext'
 import { Container } from 'semantic-ui-react'
@@ -21,7 +21,7 @@ function isEditorial (row, data) {
 }
 
 export default function Page (props) {
-  const { components, name, id } = props
+  const { components, name } = props
   const location = useLocation()
   const pages = useContext(PageContext)
   const componentsData = useContext(ComponentsContext)
@@ -49,7 +49,7 @@ export default function Page (props) {
 
   const content = useMemo(() => [
     ...layoutComponentsWithoutMenuAndFooter,
-    <main key={id}>
+    <main key='main'>
       <Container>
         <Suspense fallback=''>
           {renderedComponents}
@@ -61,11 +61,11 @@ export default function Page (props) {
   if (!pages.find(page => kebabCase(page.name) === location.pathname.replace('/', '')) && !isOnHomepage) return <PageNotFound />
 
   return (
-    <Fragment key={name}>
+    <>
       <Helmet title={name} />
       <Suspense fallback={<LoadingIndicator />}>
         {content}
       </Suspense>
-    </Fragment>
+    </>
   )
 }

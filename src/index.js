@@ -36,15 +36,15 @@ function App () {
   const pages = usePages({ analytics })
   const components = useComponents({ analytics })
   return (
-    <LayoutProvider>
-      <PageProvider value={pages}>
-        <ComponentsProvider value={components}>
+    <PageProvider value={pages}>
+      <ComponentsProvider value={components}>
+        <LayoutProvider>
           <ErrorBoundary>
             <Layout><Routes pages={pages} /></Layout>
           </ErrorBoundary>
-        </ComponentsProvider>
-      </PageProvider>
-    </LayoutProvider>
+        </LayoutProvider>
+      </ComponentsProvider>
+    </PageProvider>
   )
 }
 
