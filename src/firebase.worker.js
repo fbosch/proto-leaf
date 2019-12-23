@@ -10,7 +10,7 @@ importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js')
 importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-functions.js')
 importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js')
 
-const spreadsheet = process.env.SPREADSHEET_ID
+const mainSheet = process.env.SPREADSHEET_ID
 const config = {
   apiKey: process.env.FIREBASE_APIKEY,
   authDomain: 'protoleaf-6fbe1.firebaseapp.com',
@@ -39,12 +39,11 @@ if (self.firebase) {
   console.warn('🔥 Firebase WebWorker initialization failed')
 }
 
-function authenticate ({ client, password }) {
-  console.log(client, password)
-  console.log(self.functions)
+function authenticate ({ client, password, spreadsheet = mainSheet }) {
   const auth = self.functions.httpsCallable('authenticate')
-  auth({ client, password }).then((result) => {
-    console.log(result)
+  console.log(spreadsheet)
+  auth({ client, password, spreadsheet }).then(result => {
+    if (result) self.postMessage('authenticate', result)
   }).catch(error => {
     console.error(error)
   })
@@ -75,7 +74,7 @@ function subscribeToComponents ({ cache }) {
   const format = memoize(formatComponents)
   console.info('✔️ Subscribed to "Components" spreadsheet')
 
-  const componentsRef = self.database.ref(`/${spreadsheet}/Components`)
+  const componentsRef = self.database.ref(`/${mainSheet}/Components`)
   componentsRef.on('value', snapshot => {
     const components = snapshot.val()
     if (!components) {
@@ -111,7 +110,7 @@ function subscribeToPages ({ client, cache }) {
   const format = memoize(formatPages)
   console.info(`✔️ Subscribed to "${client}" spreadsheet`)
 
-  const pagesRef = self.database.ref(`/${spreadsheet}${client ? '/' + client : ''}`)
+  const pagesRef = self.database.ref(`/${mainSheet}${client ? '/' + client : ''}`)
   pagesRef.on('value', snapshot => {
     const pages = snapshot.val()
     if (!pages) {

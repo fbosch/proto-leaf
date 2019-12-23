@@ -9,7 +9,9 @@
     "rewrites": [ {
       "source": "**",
       "destination": "/index.html"
-    } ]
+    },
+    { "source": "/api/authenticate", "function": "authenticate" }
+  ]
   },
   "database": {
     "rules": "database.rules.json"
