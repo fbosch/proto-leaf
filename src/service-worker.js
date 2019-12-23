@@ -4,7 +4,7 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox
 if (self.workbox) {
   self.workbox.precaching.precacheAndRoute([])
 
-  self.workbox.routing.registerNavigationRoute('__PUBLIC/index.html')
+  self.workbox.routing.registerNavigationRoute('/index.html')
   // eslint-disable-next-line
   console.log('⚙️ Service Worker loaded')
   self.workbox.routing.registerRoute(

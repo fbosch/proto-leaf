@@ -19,7 +19,7 @@ export default function Spot ({ useBackground = false, ...rest }) {
   const ctaColor = isProduct ? 'blue' : 'orange'
   return (
     <Card className={classNames('spot', { 'has-background': hasBackground, product: isProduct })} title={description}>
-      {hasVideo === false && image && hasBackground === false && <Image src={image} />}
+      {hasVideo === false && image && hasBackground === false && <Image src={image} alt={teaser} />}
       {hasVideo && hasBackground === false && <YoutubeVideo src={image} className={anyTextContent ? '' : 'full-height'} />}
       {anyTextContent &&
         <Card.Content>
@@ -39,7 +39,7 @@ export default function Spot ({ useBackground = false, ...rest }) {
             {ctaText && <a href={ctaUrl} title={ctaText}><Button color={ctaColor}>{ctaText}</Button></a>}
             {linkText && <a href={linkUrl} title={linkText}>{linkText}</a>}
           </Card.Meta>
-          {image && hasBackground && <Image src={image} className='spot-background' />}
+          {image && hasBackground && <Image src={image} className='spot-background' alt={teaser} />}
         </Card.Content>}
     </Card>
   )

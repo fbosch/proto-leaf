@@ -63,7 +63,7 @@ export default function GlobalMenu (props) {
   return (
     <nav className='global-menu' key='global-menu' style={{ height: (activeLevels ? 50 + (50 * activeLevels) : 50) + 'px' }}>
       <Menu>
-        <Menu.Item><Link to='/'><Icon name='home' /></Link></Menu.Item>
+        <Menu.Item><Link to='/' title='front page'><Icon name='home' /></Link></Menu.Item>
         {topLevelLinks.map(link => [
           <Menu.Item key={link.id} className={isActive(link) ? 'active' : ''}>
             <Link to={'/' + kebabCase(link.name)}>
