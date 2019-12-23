@@ -28,9 +28,8 @@ document.addEventListener('load', () => {
   window.firebase.analytics()
 })
 
-const client = getClient()
-
 function App () {
+  const client = getClient()
   const { authenticated, authenticate } = useAuthentication({ client })
 
   useEffect(() => {
