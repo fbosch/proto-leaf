@@ -181,6 +181,10 @@ main {
 	overflow: hidden;
 	z-index: 1;
 
+	.price {
+		margin-top: $spacing / 2;
+	}
+
 	.description {
 		height: auto;
 		max-height: calc(100% - #{$min-spot-height});
@@ -226,7 +230,9 @@ main {
 		>.content {
 			padding: $spacing;
 			color: white;
-			text-shadow:  rgba(0,0,0,0.45) 0px 0px 10px;
+			.header, .description > span  {
+				text-shadow:  rgba(0,0,0,0.45) 0px 0px 10px;
+			}
 			> * {
 				a {
 					display: block;
@@ -258,4 +264,10 @@ main {
 .ui.header.page-heading {
 	font-size: 2.5rem;
 	font-weight: 600;
+}
+
+.product-list-filter {
+	.ui.segment:first-of-type .header {
+		margin-top: $spacing / 2;
+	}
 }

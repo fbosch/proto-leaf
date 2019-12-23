@@ -1,4 +1,5 @@
 import './styles/main.scss'
+import 'loading-attribute-polyfill'
 
 import { useComponents, usePages } from './hooks'
 

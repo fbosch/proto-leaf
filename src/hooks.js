@@ -24,7 +24,6 @@ export function usePages ({ client = 'Default', enableCache = enableCaching } = 
     worker.postMessage({ action, client, cache: useCache ? cached : null })
     const listener = worker.addEventListener('message', event => {
       if (event.data.action === action) {
-        // prevent setting pages if it is equal to cache
         if (previousValue.current !== event.data.value) {
           const newValue = JSON.parse(event.data.value)
           setPages(newValue)
@@ -38,6 +37,7 @@ export function usePages ({ client = 'Default', enableCache = enableCaching } = 
     })
     return () => worker.removeEventListener('message', listener)
   }, [previousValue])
+
   return pages
 }
 
@@ -62,7 +62,6 @@ export function useComponents ({ enableCache = enableCaching } = {}) {
     worker.postMessage({ action, cache: useCache ? cached : null })
     const listener = worker.addEventListener('message', event => {
       if (event.data.action === action) {
-        // prevent setting components if it is equal to cache
         if (previousValue.current !== event.data.value) {
           const newValue = JSON.parse(event.data.value)
           setComponents(newValue)
@@ -76,6 +75,7 @@ export function useComponents ({ enableCache = enableCaching } = {}) {
     })
     return () => worker.removeEventListener('message', listener)
   }, [previousValue])
+
   return components
 }
 

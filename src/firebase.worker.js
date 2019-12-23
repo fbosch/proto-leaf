@@ -28,10 +28,11 @@ const config = {
   measurementId: 'G-RMTQBWLYXN'
 }
 
-console.info('🔥 Initializing Firbase WebWorker')
 self.firebase.initializeApp(config)
 const database = self.firebase.database()
 const spreadsheet = process.env.SPREADSHEET_ID
+
+console.info('🔥 Initialized Firbase WebWorker')
 
 function formatComponentProperties (component) {
   const formattedComponent = omitBy(component, isEmpty)
@@ -40,6 +41,7 @@ function formatComponentProperties (component) {
       formattedComponent[key].trim()
     }
   })
+
   return formattedComponent
 }
 
@@ -56,6 +58,7 @@ function subscribeToComponents ({ cache }) {
   let initialized = false
   const format = memoize(formatComponents)
   console.info('✔️ Subscribed to Components Spreadsheet')
+
   const componentsRef = database.ref(`/${spreadsheet}/Components`)
   componentsRef.on('value', snapshot => {
     const components = snapshot.val()
@@ -72,7 +75,6 @@ function subscribeToComponents ({ cache }) {
 }
 
 function formatPages (pages) {
-  // TODO: remove empty properties
   return JSON.stringify(pages.filter(page => {
     if (every(Object.values(page), isEmpty)) return false // filter out empty pages
     return true
@@ -89,6 +91,7 @@ function subscribeToPages ({ client, cache }) {
   let initialized = false
   const format = memoize(formatPages)
   console.info('✔️ Subscribed to Pages Spreadsheet')
+
   const pagesRef = database.ref(`/${spreadsheet}${client ? '/' + client : ''}`)
   pagesRef.on('value', snapshot => {
     const pages = snapshot.val()
