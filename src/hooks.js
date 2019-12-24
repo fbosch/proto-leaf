@@ -24,17 +24,21 @@ export function useAuthentication ({ client, enableCache = enableCaching }) {
   const cachedAuthentication = Boolean(Cookies.get(clientIdentifier))
   const [authenticated, setAuthenticated] = useState(client === 'Default' || cachedAuthentication)
   const [clientLeafs, setClientLeafs] = useState(useCache ? JSON.parse(cached) : [])
-  const authenticate = useCallback(password => worker.postMessage({ action, client, password }), [client])
+  const authenticate = useCallback(password => {
+    if (password) {
+      worker.postMessage({ action, client, password })
+    }
+  }, [client])
 
   useEffect(() => {
     function authenticationListener (event) {
-      const { action, id, leafs } = event.data
-      if (action === 'authenticate') {
+      if (event.data.action === 'authenticate') {
+        const { id, leafs } = event.data
         if (id) {
           setAuthenticated(true)
           setClientLeafs(leafs)
           window.requestIdleCallback(() => {
-            Cookies.set(clientIdentifier, true, { expires: 3 })
+            Cookies.set(clientIdentifier, true, { expires: 3 }) // 3 days
             window.localStorage.setItem('leafs', JSON.stringify(leafs))
           })
         } else {
@@ -66,7 +70,6 @@ export function usePages ({ client = 'Default', enableCache = enableCaching } = 
   useEffect(() => {
     if (authenticated === false) return
     const action = 'pages'
-    worker.postMessage({ action, client, cache: useCache ? cached : null })
     function listenForPageChanges (event) {
       if (event.data.action === action) {
         if (previousValue.current !== event.data.value) {
@@ -81,6 +84,7 @@ export function usePages ({ client = 'Default', enableCache = enableCaching } = 
       }
     }
     worker.addEventListener('message', listenForPageChanges)
+    worker.postMessage({ action, client, cache: useCache ? cached : null })
     return () => worker.removeEventListener('message', listenForPageChanges)
   }, [previousValue, authenticated])
 
@@ -89,13 +93,13 @@ export function usePages ({ client = 'Default', enableCache = enableCaching } = 
 
 export function useCurrentPage () {
   const pages = useContext(PageContext)
-  const [homePage] = pages
   const location = useLocation()
   const path = useMemo(() => location.pathname.replace('/', ''), [location])
   const locationId = useMemo(() => toInteger(path), [path])
   const hasId = useMemo(() => isNumber(locationId) && locationId !== 0, [locationId])
   if (hasId) return pages.find(page => toInteger(page.id) === locationId)
   if (path) return pages.find(page => page.url === path)
+  const [homePage] = pages
   return homePage
 }
 
@@ -103,7 +107,6 @@ export function useCurrentPage () {
 export function useComponents ({ enableCache = enableCaching } = {}) {
   const action = 'components'
   const { authenticated } = useContext(AuthenticationContext)
-
   const cached = window.localStorage.getItem(action)
   const useCache = enableCache && cached
   const initialValue = useCache ? JSON.parse(cached) : []
@@ -112,7 +115,6 @@ export function useComponents ({ enableCache = enableCaching } = {}) {
 
   useEffect(() => {
     if (authenticated === false) return
-    worker.postMessage({ action, cache: useCache ? cached : null })
     function listenForComponentChanges (event) {
       if (event.data.action === action) {
         if (previousValue.current !== event.data.value) {
@@ -127,6 +129,7 @@ export function useComponents ({ enableCache = enableCaching } = {}) {
       }
     }
     worker.addEventListener('message', listenForComponentChanges)
+    worker.postMessage({ action, cache: useCache ? cached : null })
     return () => worker.removeEventListener('message', listenForComponentChanges)
   }, [previousValue, authenticated])
 

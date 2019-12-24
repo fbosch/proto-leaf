@@ -14,7 +14,7 @@
     "clearDist": true,
     "globDirectory": "./dist",
     "globPatterns": [
-      "**/*.{js,css,jpg,png,gif,svg,eot,ttf,woff,woff2}"
+      "**/*.{html,js,css,jpg,png,gif,svg,eot,ttf,woff,woff2}"
     ],
     "swSrc": "./src/service-worker.js",
     "templatedURLs": {
@@ -43,6 +43,8 @@
   "homepage": "https://github.com/fbosch/proto-leaf#readme",
   "devDependencies": {
     "@babel/core": "^7.7.7",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.7.4",
+    "@babel/plugin-proposal-optional-chaining": "^7.7.5",
     "@babel/preset-env": "^7.7.7",
     "@babel/preset-react": "^7.7.4",
     "@svgr/parcel-plugin-svgr": "^4.3.3",
@@ -60,8 +62,6 @@
     "standard": "^14.3.1"
   },
   "dependencies": {
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
     "classnames": "^2.2.6",
     "dompurify": "^2.0.7",
     "get-youtube-id": "^1.0.1",
@@ -70,6 +70,8 @@
     "md5": "^2.2.1",
     "modern-normalize": "^0.5.0",
     "query-string": "^6.9.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "react-helmet": "^5.2.1",
     "react-lite-youtube-embed": "^0.1.5-1",
     "react-router-dom": "^5.1.2",

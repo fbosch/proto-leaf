@@ -7,6 +7,7 @@ import Helmet from 'react-helmet'
 import LoadingIndicator from './LoadingIndicator'
 import PageNotFound from './PageNotFound'
 import camelCase from 'lodash/camelCase'
+import classNames from 'classnames'
 import isArray from 'lodash/isArray'
 import some from 'lodash/_arraySome'
 import { useLocation } from 'react-router'
@@ -38,7 +39,7 @@ export default function Page ({ components, name }) {
       <div className='row' key={index}>
         {row.map((component, index) => {
           const value = getComponent(component)
-          return value ? <div className='col' key={index} children={value} /> : null
+          return <div className={classNames('col', { 'is-empty': !value })} key={index} children={value} />
         }
         )}
       </div>

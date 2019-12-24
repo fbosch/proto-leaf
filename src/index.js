@@ -12,12 +12,13 @@ import { useAuthentication } from './hooks'
 
 document.title = startCase(camelCase(window.location.pathname.replace('/', '')))
 
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js')
+  })
+}
+
 document.addEventListener('load', () => {
-  if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('service-worker.js')
-    })
-  }
   window.firebase.initializeApp({
     apiKey: process.env.FIREBASE_APIKEY,
     projectId: 'protoleaf-6fbe1',
@@ -28,12 +29,16 @@ document.addEventListener('load', () => {
   window.firebase.analytics()
 })
 
+ReactDOM.render(<App />, document.getElementById('root'))
+
 function App () {
   const client = getClient()
   const { authenticated, authenticate } = useAuthentication({ client })
 
   useEffect(() => {
-    if (authenticated === false) authenticate(window.prompt('Enter Password'))
+    if (authenticated === false) {
+      authenticate(window.prompt('Enter Password'))
+    }
   }, [authenticated, authenticate])
 
   return (
@@ -43,17 +48,17 @@ function App () {
   )
 }
 
-ReactDOM.render(<App />, document.getElementById('root'))
-
 function getClient () {
+  const defaultClient = 'Default'
+  const excludedClients = ['default', '', 'Leafs']
   const parameters = queryString.parse(window.location.search)
   const validClientName = parameters.client && !parameters.client.includes('.') && parameters.client !== 'default'
   const client = (validClientName ? parameters.client : undefined) ||
- (
-   ['default', '', 'Leafs'].includes(parameters.client)
-     ? 'Default'
-     : window.localStorage.getItem('client') || 'Default'
+ (excludedClients.includes(parameters.client)
+   ? defaultClient
+   : window.localStorage.getItem('client') || defaultClient
  )
+
   if (validClientName === false) {
     console.warn(
   `Provided client name "${parameters.client}" is invalid.

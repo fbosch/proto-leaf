@@ -12,9 +12,9 @@ export default function Spot ({ useBackground = false, ...rest }) {
     headingOne, headingTwo, headingThree, description, teaser, component
   } = rest
 
-  const hasVideo = component && component.includes('video') && image
+  const hasVideo = component?.includes('video') && image
   const anyTextContent = some([richContent, ctaText, linkText, headingOne, headingTwo, headingThree], Boolean)
-  const isProduct = (component && component.includes('Product')) || type.toLowerCase() === 'shop'
+  const isProduct = (component?.includes('Product')) || type.toLowerCase() === 'shop'
   const isProductHighlight = isProduct && component.includes('highlight')
   const hasBackground = (type.includes('background') || useBackground || isProductHighlight) && image
   const ctaColor = isProduct ? 'blue' : 'orange'
