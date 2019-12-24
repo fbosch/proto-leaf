@@ -113,7 +113,13 @@ function formatPages (pages) {
   }).map(page => {
     if (isEmpty(page.components) === false) {
       const rows = page.components.split('\n')
-      page.components = rows.map(row => row.split(',').map(camelCase)) // convert to camelCase to match mapped components
+      page.components = rows.map(row => row.split(',').map(component => {
+        if (component.includes('+')) {
+          const plusesToAdd = component.match(/\+/g).length
+          return camelCase(component) + '+'.repeat(plusesToAdd)
+        }
+        return camelCase(component)
+      })) // convert to camelCase to match mapped components
     }
     return page
   }))

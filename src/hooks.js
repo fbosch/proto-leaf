@@ -140,13 +140,14 @@ export function useComponents ({ enableCache = enableCaching } = {}) {
 export function useComponent (page) {
   const components = useContext(ComponentsContext)
   return useCallback((componentName, key) => {
-    if (isEmpty(components) || isEmpty(componentName)) return null
-    if (componentName in components === false) {
-      console.warn(`Provided component "${componentName}" does NOT exist in the components spreadsheet`)
+    const component = componentName.replace(/\+/g, '')
+    if (isEmpty(components) || isEmpty(component)) return null
+    if (component in components === false) {
+      console.warn(`Provided component "${component}" does NOT exist in the components spreadsheet`)
       return null
     }
-    const componentFileName = componentName.replace(/^\w/, c => c.toUpperCase())
-    const componentData = components[componentName]
+    const componentFileName = component.replace(/^\w/, c => c.toUpperCase())
+    const componentData = components[component]
     const asyncComponent = getAsyncComponent(componentFileName, componentData)
     const Component = asyncComponent ? lazy(asyncComponent) : Fragment
     return asyncComponent ? <Component {...componentData} key={key || componentFileName} page={page} /> : componentFileName

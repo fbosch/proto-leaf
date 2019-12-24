@@ -16,6 +16,8 @@ function getComponentMatchForSpreadsheet (component, data) {
     case 'ProductHighlight': return () => import('./Spot')
     case 'ProductListFilterAndSort': return () => import('./ProductListFilterAndSort')
   }
+
+  console.warn('No react component for ', component)
   return null
 }
 
