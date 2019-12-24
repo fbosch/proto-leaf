@@ -13,11 +13,11 @@ export default function Layout ({ children }) {
     <div className='grid'>
       <Router>
         <ScrollMemory />
-        {layout.showGlobalMenu && getComponent('globalMenu')}
         <Suspense fallback={<LoadingIndicator />}>
+          {layout.showGlobalMenu && getComponent('globalMenu')}
           {children}
+          {layout.showFooter && getComponent('footer')}
         </Suspense>
-        {layout.showFooter && getComponent('footer')}
       </Router>
     </div>
   )
