@@ -116,7 +116,7 @@ function formatPages (pages) {
       page.components = rows.map(row => row.split(',').map(component => {
         if (component.includes('+')) {
           const plusesToAdd = component.match(/\+/g).length
-          return camelCase(component) + '+'.repeat(plusesToAdd)
+          return camelCase(component) + ('+').repeat(plusesToAdd)
         }
         return camelCase(component)
       })) // convert to camelCase to match mapped components

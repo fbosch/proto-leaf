@@ -28,8 +28,6 @@ export default function Page ({ components, name }) {
   const editorialComponentRows = useMemo(() => components.filter(row => isEditorial(row, componentsData)), [components, componentsData])
   const layoutComponentRows = useMemo(() => components.filter(row => !isEditorial(row, componentsData)), [components, componentsData])
 
-  console.log(currentPage)
-
   // Remove global header and footer from content (managed by Layout)
   const layoutComponentsWithoutMenuAndFooter = useMemo(() => layoutComponentRows
     .filter(row => !row.includes('footer'))

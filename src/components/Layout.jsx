@@ -11,16 +11,14 @@ export default function Layout ({ children }) {
   const getComponent = useComponent()
   return (
     <div className='grid'>
-      <Suspense fallback={<LoadingIndicator />}>
-        <Router>
-          <ScrollMemory />
-          {layout.showGlobalMenu && getComponent('globalMenu')}
-          <Suspense fallback={<LoadingIndicator />}>
-            {children}
-          </Suspense>
-          {layout.showFooter && getComponent('footer')}
-        </Router>
-      </Suspense>
+      <Router>
+        <ScrollMemory />
+        {layout.showGlobalMenu && getComponent('globalMenu')}
+        <Suspense fallback={<LoadingIndicator />}>
+          {children}
+        </Suspense>
+        {layout.showFooter && getComponent('footer')}
+      </Router>
     </div>
   )
 }

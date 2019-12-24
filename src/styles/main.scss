@@ -200,8 +200,10 @@ main {
 		min-height: $min-spot-height;
 		.meta {
 			width: calc(100% - #{$spacing * 2});
-			position: absolute;
 			bottom: $spacing;
+			@include tablet {
+				position: absolute;
+			}
 		}
 		a {
 			display: block;

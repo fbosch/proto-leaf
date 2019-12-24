@@ -9,6 +9,7 @@ exports.authenticate = functions.https.onCall(data => {
   const leafs = database.ref(`/${spreadsheet}/Leafs`)
   const blacklist = ['password', 'url']
   return new Promise((resolve, reject) => {
+    leafs.on('value', handleAuthentication)
     function handleAuthentication (snapshot) {
       const value = snapshot.val()
       if (value) {
@@ -33,6 +34,5 @@ exports.authenticate = functions.https.onCall(data => {
       }
       leafs.off('value', handleAuthentication)
     }
-    leafs.on('value', handleAuthentication)
   })
 })
