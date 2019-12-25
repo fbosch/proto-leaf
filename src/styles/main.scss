@@ -87,8 +87,10 @@ main {
 .row {
 	display: flex;
 	justify-content: space-between;
-	width: 100%;
+	width: auto;
+	max-width: cacl(100% + #{$spacing});
 	flex-wrap: wrap;
+	margin-right: -$spacing;
 	&:empty {
 		display: none;
 	}
@@ -105,9 +107,11 @@ main {
 	flex: 1;
 	justify-content: space-between;
 	max-width: 100%;
-	margin-top: $spacing;
+	padding-top: $spacing;
+	padding-right: $spacing;
+
 	+.col {
-		margin-left: $spacing;
+		padding-right: $spacing;
 	}
 }
 

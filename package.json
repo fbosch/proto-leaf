@@ -10,7 +10,6 @@
     "last 3 chrome versions"
   ],
   "cache": {
-    "debug": false,
     "strategy": "inject",
     "clearDist": true,
     "globDirectory": "./dist",
