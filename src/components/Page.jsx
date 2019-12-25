@@ -39,8 +39,8 @@ export default function Page ({ components, name }) {
       <div className='row' key={index}>
         {row.map((component, index) => {
           const value = getComponent(component)
-          const flex = component.endsWith('+') ? component.match(/\+/g).length + 1 : 1
-          return <div className={classNames('col', { 'is-empty': !value })} style={{ flex }} key={index} children={value} />
+          const flexGrow = component.endsWith('+') ? component.match(/\+/g).length + 1 : null
+          return <div className={classNames('col', { 'is-empty': !value })} style={{ flexGrow }} key={index} children={value} />
         }
         )}
       </div>

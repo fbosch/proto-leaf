@@ -13,17 +13,20 @@ import { useLocation } from 'react-router-dom'
 
 // eslint-disable-next-line
 const worker = new Worker('./firebase.worker.js')
-const enableCaching = process.env.NODE_ENV === 'production'
+const enableCaching = true || process.env.NODE_ENV === 'production'
 console.assert(enableCaching, 'Caching is disabled')
 
-export function useAuthentication ({ client, enableCache = enableCaching }) {
+export function useAuthentication ({ client = 'Default', enableCache = enableCaching }) {
   const action = 'authenticate'
   const cached = window.localStorage.getItem('leafs')
   const useCache = enableCache && cached
+
   const clientIdentifier = md5(client + '🍃')
   const cachedAuthentication = Boolean(Cookies.get(clientIdentifier))
+
   const [authenticated, setAuthenticated] = useState(client === 'Default' || cachedAuthentication)
   const [clientLeafs, setClientLeafs] = useState(useCache ? JSON.parse(cached) : [])
+
   const authenticate = useCallback(password => {
     if (password) {
       worker.postMessage({ action, client, password })
@@ -31,6 +34,7 @@ export function useAuthentication ({ client, enableCache = enableCaching }) {
   }, [client])
 
   useEffect(() => {
+    if (authenticated) return
     function authenticationListener (event) {
       if (event.data.action === 'authenticate') {
         const { id, leafs } = event.data

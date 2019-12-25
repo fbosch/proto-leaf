@@ -14,9 +14,9 @@ export default function Spot ({ useBackground = false, ...rest }) {
 
   const hasVideo = component?.includes('video') && image
   const anyTextContent = some([richContent, ctaText, linkText, headingOne, headingTwo, headingThree], Boolean)
-  const isProduct = (component?.includes('Product')) || type.toLowerCase() === 'shop'
-  const isProductHighlight = isProduct && component.includes('highlight')
-  const hasBackground = (type.includes('background') || useBackground || isProductHighlight) && image
+  const isProduct = component?.includes('Product') || type?.toLowerCase() === 'shop'
+  const isProductHighlight = isProduct && component?.includes('highlight')
+  const hasBackground = (type?.includes('background') || useBackground || isProductHighlight) && image
   const ctaColor = isProduct ? 'blue' : 'orange'
 
   return (
@@ -41,8 +41,8 @@ export default function Spot ({ useBackground = false, ...rest }) {
             {ctaText && <a href={ctaUrl} title={ctaText}><Button color={ctaColor}>{ctaText}</Button></a>}
             {linkText && <a href={linkUrl} title={linkText}>{linkText}</a>}
           </Card.Meta>
-          {image && hasBackground && <Image src={image} className='spot-background' alt={teaser} />}
         </Card.Content>}
+      {image && (hasBackground || !anyTextContent) && <Image src={image} className='spot-background' alt={teaser} />}
     </Card>
   )
 }

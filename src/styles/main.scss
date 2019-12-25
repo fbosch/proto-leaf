@@ -4,11 +4,11 @@
 @import "./animation";
 
 .grid {
+	min-height: 100vh;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	grid-auto-rows: minmax(100px, auto);
 	grid-template-rows: auto 1fr;
-	min-height: 100vh;
 	grid-template-areas:
 		"head head head head"
 		"main main main main"
@@ -85,15 +85,14 @@ main {
 }
 
 .row {
-	&:empty {
-		display: none;
-	}
 	display: flex;
 	justify-content: space-between;
 	width: 100%;
-	+.row {
-		margin-top: $spacing;
+	flex-wrap: wrap;
+	&:empty {
+		display: none;
 	}
+
 	@include mobile {
 		+.row {
 			margin-top: 0;
@@ -104,31 +103,12 @@ main {
 
 .col {
 	flex: 1;
+	justify-content: space-between;
 	max-width: 100%;
-	@include mobile {
-		margin: 0 0 $spacing;
-	}
-
-	&:first-of-type+.col {
+	margin-top: $spacing;
+	+.col {
 		margin-left: $spacing;
-		&:not(:last-of-type) {
-			margin-right: $spacing;
-		}
-		@include mobile {
-			&:not(:last-of-type) {
-				margin-right: 0;
-			}
-			margin-left: 0;
-		}
 	}
-
-	+ .col:not(:last-of-type) {
-		margin-right: $spacing;
-		}
-		@include mobile {
-			margin-right: 0;
-			margin-bottom: $spacing;
-		}
 }
 
 .footer {

@@ -2,7 +2,8 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js')
 
 if (self.workbox) {
-  self.workbox.precaching.precacheAndRoute([])
+  self.workbox.setConfig({ debug: false }) // prevent excessive logs on localhost
+  self.workbox.precaching.precacheAndRoute([]) // precached assets will be injected by parcel
 
   self.workbox.routing.registerNavigationRoute('/index.html')
   // eslint-disable-next-line

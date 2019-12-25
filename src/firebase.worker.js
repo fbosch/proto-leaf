@@ -23,6 +23,7 @@ const config = {
 }
 
 self.addEventListener('message', event => {
+  // ? Replace with comlink to remove boilerplate
   const { action, ...rest } = event.data
   switch (action) {
     case 'authenticate': return authenticate(rest)

@@ -1,20 +1,25 @@
 import memoize from 'lodash/memoize'
 
 function getComponentMatchForSpreadsheet (component, data) {
-  if (component.startsWith('Spot') || (data.category && data.category.toLowerCase() === 'spot')) {
+  if (component.startsWith('Spot') || (data?.category?.toLowerCase() === 'spot')) {
     return () => import('./Spot')
   }
 
+  if (component.startsWith('RichTextContent') || data?.category?.toLowerCase() === 'base content') {
+    return () => import('./RichTextContent')
+  }
   // replace with dynamic importing
   switch (component) {
+    case 'ProductListItem':
+    case 'Spot':
+    case 'ProductInfo':
+    case 'ProductHighlight': return () => import('./Spot')
+    case 'ProductListFilterAndSort': return () => import('./ProductListFilterAndSort')
     case 'GlobalMenu': return () => import('./GlobalMenu')
     case 'Footer': return () => import('./Footer')
     case 'PageHeading': return () => import('./PageHeading')
-    case 'RichTextContent': return () => import('./RichTextContent')
-    case 'ProductListItem':
-    case 'Spot':
-    case 'ProductHighlight': return () => import('./Spot')
-    case 'ProductListFilterAndSort': return () => import('./ProductListFilterAndSort')
+    case 'LoginModule': return () => import('./LoginForm')
+    case 'OrderPayment': return () => import('./OrderForm')
   }
 
   console.warn('No react component for ', component)
