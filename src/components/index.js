@@ -20,6 +20,8 @@ function getComponentMatchForSpreadsheet (component, data) {
     case 'PageHeading': return () => import('./PageHeading')
     case 'LoginModule': return () => import('./LoginForm')
     case 'OrderPayment': return () => import('./OrderForm')
+    case 'Contact': return () => import('./ContactForm')
+    case 'ProductTabs': return () => import('./ProductTabs')
   }
 
   console.warn('No react component for ', component)
