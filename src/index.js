@@ -1,10 +1,11 @@
 import './styles/main.scss'
 
-import React, { Suspense, lazy, useEffect } from 'react'
+import React, { useEffect } from 'react'
 
 import { AuthenticationProvider } from './contexts/AuthenticationContext'
 import Cookies from 'js-cookie'
-import LoadingIndicator from './components/LoadingIndicator'
+import LoginFailed from './components/LoginFailed'
+import PageContents from './components/PageContents'
 import ReactDOM from 'react-dom'
 import queryString from 'query-string'
 import startCase from 'lodash/startCase'
@@ -35,8 +36,6 @@ ReactDOM.render(<App />, document.getElementById('root'))
 
 function App () {
   const client = getClient()
-  const PageContents = lazy(() => import('./components/PageContents'))
-  const LoginFailed = lazy(() => import('./components/LoginFailed'))
   const { authenticated, authenticate, clientLeafs, loginFailed } = useAuthentication({ client })
 
   useEffect(() => {
@@ -47,9 +46,7 @@ function App () {
 
   return (
     <AuthenticationProvider value={authenticated}>
-      <Suspense fallback={<LoadingIndicator />}>
-        {loginFailed ? <LoginFailed /> : (authenticated && <PageContents client={client} leafs={clientLeafs} />)}
-      </Suspense>
+      {loginFailed ? <LoginFailed /> : (authenticated && <PageContents client={client} leafs={clientLeafs} />)}
     </AuthenticationProvider>
   )
 }

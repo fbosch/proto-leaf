@@ -41,16 +41,6 @@
       ]
     }
   },
-  "gzip": {
-    "enabled": true,
-    "numiterations": 15,
-    "blocksplitting": true,
-    "blocksplittinglast": false,
-    "blocksplittingmax": 15,
-    "zlib": false,
-    "zlibLevel": 9,
-    "zlibMemLevel": 9
-  },
   "devDependencies": {
     "@babel/core": "^7.7.7",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.7.4",
@@ -66,7 +56,6 @@
     "firebase-cli": "^1.2.0",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-bundle-visualiser": "^1.2.0",
-    "parcel-plugin-compress": "^1.1.0",
     "parcel-plugin-sw-cache": "^0.3.1",
     "rimraf": "^3.0.0",
     "sass": "^1.23.7",
