@@ -7,7 +7,7 @@ const database = admin.database()
 exports.authenticate = functions.https.onCall(data => {
   const { client, password, spreadsheet } = data
   const leafs = database.ref(`/${spreadsheet}/Leafs`)
-  const blacklist = ['password', 'url']
+  const whitelist = ['id', 'name', 'leaf']
   return new Promise((resolve, reject) => {
     leafs.on('value', handleAuthentication)
     function handleAuthentication (snapshot) {
@@ -20,7 +20,7 @@ exports.authenticate = functions.https.onCall(data => {
           // remove blacklisted keys to prevent them from getting sent to the client (such as passwords)
           values = values.map(clientItem => {
             Object.keys(clientItem)
-              .filter(key => blacklist.includes(key))
+              .filter(key => !whitelist.includes(key))
               .forEach(key => {
                 delete clientItem[key]
               })

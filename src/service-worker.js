@@ -29,7 +29,7 @@ if (self.workbox) {
     new self.workbox.strategies.StaleWhileRevalidate()
   )
   self.workbox.routing.registerRoute(
-    /\.js$/,
+    /\.(?:js|html)$/,
     new self.workbox.strategies.NetworkFirst()
   )
   self.workbox.routing.registerRoute(

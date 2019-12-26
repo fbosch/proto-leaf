@@ -1,17 +1,16 @@
 import './styles/main.scss'
 
-import React, { useEffect } from 'react'
+import React, { Suspense, lazy, useEffect } from 'react'
 
 import { AuthenticationProvider } from './contexts/AuthenticationContext'
 import Cookies from 'js-cookie'
-import PageContents from './components/PageContents'
+import LoadingIndicator from './components/LoadingIndicator'
 import ReactDOM from 'react-dom'
-import camelCase from 'lodash/camelCase'
 import queryString from 'query-string'
 import startCase from 'lodash/startCase'
 import { useAuthentication } from './hooks'
 
-document.title = startCase(camelCase(window.location.pathname.replace('/', '')))
+document.title = startCase(window.location.pathname.replace('/', ''))
 
 if (process.env.NODE_ENV === 'production') {
   if ('serviceWorker' in navigator) {
@@ -36,7 +35,9 @@ ReactDOM.render(<App />, document.getElementById('root'))
 
 function App () {
   const client = getClient()
-  const { authenticated, authenticate, clientLeafs, wrongPassword } = useAuthentication({ client })
+  const PageContents = lazy(() => import('./components/PageContents'))
+  const LoginFailed = lazy(() => import('./components/LoginFailed'))
+  const { authenticated, authenticate, clientLeafs, loginFailed } = useAuthentication({ client })
 
   useEffect(() => {
     if (authenticated === false) {
@@ -46,7 +47,9 @@ function App () {
 
   return (
     <AuthenticationProvider value={authenticated}>
-      {wrongPassword ? 'Wrong Password' : <PageContents client={client} leafs={clientLeafs} />}
+      <Suspense fallback={<LoadingIndicator />}>
+        {loginFailed ? <LoginFailed /> : (authenticated && <PageContents client={client} leafs={clientLeafs} />)}
+      </Suspense>
     </AuthenticationProvider>
   )
 }

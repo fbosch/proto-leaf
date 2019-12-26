@@ -25,7 +25,7 @@ export function useAuthentication ({ client = 'Default' }) {
 
   const [authenticated, setAuthenticated] = useState(client === 'Default' || cachedAuthentication)
   const [clientLeafs, setClientLeafs] = useState(cached ? JSON.parse(cached) : [])
-  const [wrongPassword, setWrongPassword] = useState(false)
+  const [loginFailed, setLoginFailed] = useState(false)
 
   const authenticate = useCallback(password => {
     if (password) {
@@ -40,14 +40,14 @@ export function useAuthentication ({ client = 'Default' }) {
         const { id, leafs, failed } = event.data
         if (id) {
           setClientLeafs(leafs.filter(isEmpty))
-          setWrongPassword(false)
+          setLoginFailed(false)
           setAuthenticated(true)
           window.requestIdleCallback(() => {
             Cookies.set(clientIdentifier, true, { expires: 3 }) // 3 days
             window.localStorage.setItem('leafs', JSON.stringify(leafs))
           })
         } else {
-          if (failed) setWrongPassword(true)
+          if (failed) setLoginFailed(true)
           setAuthenticated(false)
         }
       }
@@ -56,7 +56,7 @@ export function useAuthentication ({ client = 'Default' }) {
     return () => worker.removeEventListener('message', authenticationListener)
   }, [client, authenticated])
 
-  return { authenticated, authenticate, clientLeafs, wrongPassword }
+  return { authenticated, authenticate, clientLeafs, loginFailed }
 }
 
 export function usePages ({ client = 'Default', leafs, enableCache = enableCaching } = {}) {

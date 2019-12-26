@@ -1,27 +1,10 @@
 {
   "name": "proto-leaf",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "prototyping with sheets",
   "main": "index.js",
   "standard": {
     "parser": "babel-eslint"
-  },
-  "browserslist": [
-    "last 3 chrome versions"
-  ],
-  "cache": {
-    "strategy": "inject",
-    "clearDist": true,
-    "globDirectory": "./dist",
-    "globPatterns": [
-      "**/*.{html,js,css,jpg,png,gif,svg,eot,ttf,woff,woff2}"
-    ],
-    "swSrc": "./src/service-worker.js",
-    "templatedURLs": {
-      "/": [
-        "index.html"
-      ]
-    }
   },
   "scripts": {
     "prebuild": "rimraf dist && rimraf .cache",
@@ -41,6 +24,33 @@
     "url": "https://github.com/fbosch/proto-leaf/issues"
   },
   "homepage": "https://github.com/fbosch/proto-leaf#readme",
+  "browserslist": [
+    "last 3 chrome versions"
+  ],
+  "cache": {
+    "strategy": "inject",
+    "clearDist": true,
+    "globDirectory": "./dist",
+    "globPatterns": [
+      "**/*.{html,js,css,jpg,png,gif,svg,eot,ttf,woff,woff2}"
+    ],
+    "swSrc": "./src/service-worker.js",
+    "templatedURLs": {
+      "/": [
+        "index.html"
+      ]
+    }
+  },
+  "gzip": {
+    "enabled": true,
+    "numiterations": 15,
+    "blocksplitting": true,
+    "blocksplittinglast": false,
+    "blocksplittingmax": 15,
+    "zlib": false,
+    "zlibLevel": 9,
+    "zlibMemLevel": 9
+  },
   "devDependencies": {
     "@babel/core": "^7.7.7",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.7.4",
@@ -56,6 +66,7 @@
     "firebase-cli": "^1.2.0",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-bundle-visualiser": "^1.2.0",
+    "parcel-plugin-compress": "^1.1.0",
     "parcel-plugin-sw-cache": "^0.3.1",
     "rimraf": "^3.0.0",
     "sass": "^1.23.7",
