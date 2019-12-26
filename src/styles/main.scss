@@ -21,7 +21,7 @@
 
 .global-menu {
 	grid-area: head;
-	max-width: 1200px;
+	max-width: $menu-max-width;
 	width: 100%;
 	z-index: 40;
 	margin: 0 auto;
@@ -51,7 +51,7 @@
 			left: 50%;
 			transform: translateX(-50%);
 			height: 50px;
-			max-width: 1200px;
+			max-width: $menu-max-width;
 			width: 100vw;
 			.ui.menu {
 				top: 45px;
@@ -77,11 +77,11 @@ main {
 	overflow: hidden;
 	grid-area: main;
 	width: 100%;
-	padding: 30px;
 	margin: 0 auto;
 	opacity: 0;
 	animation: fade-in 250ms linear;
 	animation-fill-mode: forwards;
+	padding: 15px 0px;
 }
 
 .row {

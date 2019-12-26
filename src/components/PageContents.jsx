@@ -8,8 +8,8 @@ import { PageProvider } from '../contexts/PageContext'
 import React from 'react'
 import Routes from './Routes'
 
-export default function PageContents ({ client }) {
-  const pages = usePages({ client })
+export default function PageContents ({ client, leafs }) {
+  const pages = usePages({ client, leafs })
   const components = useComponents()
 
   return (

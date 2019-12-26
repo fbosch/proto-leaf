@@ -13,19 +13,19 @@ import { useLocation } from 'react-router-dom'
 
 // eslint-disable-next-line
 const worker = new Worker('./firebase.worker.js')
-const enableCaching = true || process.env.NODE_ENV === 'production'
+const enableCaching = process.env.NODE_ENV === 'production'
 console.assert(enableCaching, 'Caching is disabled')
 
-export function useAuthentication ({ client = 'Default', enableCache = enableCaching }) {
+export function useAuthentication ({ client = 'Default' }) {
   const action = 'authenticate'
   const cached = window.localStorage.getItem('leafs')
-  const useCache = enableCache && cached
 
   const clientIdentifier = md5(client + '🍃')
   const cachedAuthentication = Boolean(Cookies.get(clientIdentifier))
 
   const [authenticated, setAuthenticated] = useState(client === 'Default' || cachedAuthentication)
-  const [clientLeafs, setClientLeafs] = useState(useCache ? JSON.parse(cached) : [])
+  const [clientLeafs, setClientLeafs] = useState(cached ? JSON.parse(cached) : [])
+  const [wrongPassword, setWrongPassword] = useState(false)
 
   const authenticate = useCallback(password => {
     if (password) {
@@ -37,15 +37,17 @@ export function useAuthentication ({ client = 'Default', enableCache = enableCac
     if (authenticated) return
     function authenticationListener (event) {
       if (event.data.action === 'authenticate') {
-        const { id, leafs } = event.data
+        const { id, leafs, failed } = event.data
         if (id) {
+          setClientLeafs(leafs.filter(isEmpty))
+          setWrongPassword(false)
           setAuthenticated(true)
-          setClientLeafs(leafs)
           window.requestIdleCallback(() => {
             Cookies.set(clientIdentifier, true, { expires: 3 }) // 3 days
             window.localStorage.setItem('leafs', JSON.stringify(leafs))
           })
         } else {
+          if (failed) setWrongPassword(true)
           setAuthenticated(false)
         }
       }
@@ -54,26 +56,22 @@ export function useAuthentication ({ client = 'Default', enableCache = enableCac
     return () => worker.removeEventListener('message', authenticationListener)
   }, [client, authenticated])
 
-  return { authenticated, authenticate, clientLeafs }
+  return { authenticated, authenticate, clientLeafs, wrongPassword }
 }
 
-export function usePages ({ client = 'Default', enableCache = enableCaching } = {}) {
-  const { authenticated } = useContext(AuthenticationContext)
-  const cached = window.localStorage.getItem(client)
+export function usePages ({ client = 'Default', leafs, enableCache = enableCaching } = {}) {
+  const authenticated = useContext(AuthenticationContext)
+  const clientLeaf = leafs?.find(leaf => leaf?.leaf?.toLowerCase() === client.toLowerCase())?.leaf || client
+  const cached = window.localStorage.getItem(clientLeaf)
   const useCache = enableCache && cached
   const initialValue = useCache ? JSON.parse(cached) : []
   const [pages, setPages] = useState(initialValue)
   const previousValue = useRef(useCache)
 
-  if (client === 'Default') {
-    window.localStorage.removeItem('client')
-  } else {
-    window.localStorage.setItem('client', client)
-  }
-
   useEffect(() => {
     if (authenticated === false) return
     const action = 'pages'
+    clientLeaf === 'Default' ? Cookies.remove('client') : Cookies.set('client', clientLeaf)
     function listenForPageChanges (event) {
       if (event.data.action === action) {
         if (previousValue.current !== event.data.value) {
@@ -88,9 +86,9 @@ export function usePages ({ client = 'Default', enableCache = enableCaching } = 
       }
     }
     worker.addEventListener('message', listenForPageChanges)
-    worker.postMessage({ action, client, cache: useCache ? cached : null })
+    worker.postMessage({ action, client: clientLeaf, cache: useCache ? cached : null })
     return () => worker.removeEventListener('message', listenForPageChanges)
-  }, [previousValue, authenticated])
+  }, [previousValue, authenticated, clientLeaf])
 
   return pages
 }
@@ -110,7 +108,7 @@ export function useCurrentPage () {
 // subscribe to the list of spreadsheet components
 export function useComponents ({ enableCache = enableCaching } = {}) {
   const action = 'components'
-  const { authenticated } = useContext(AuthenticationContext)
+  const authenticated = useContext(AuthenticationContext)
   const cached = window.localStorage.getItem(action)
   const useCache = enableCache && cached
   const initialValue = useCache ? JSON.parse(cached) : []

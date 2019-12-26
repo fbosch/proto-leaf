@@ -24,7 +24,7 @@ function getComponentMatchForSpreadsheet (component, data) {
     case 'ProductTabs': return () => import('./ProductTabs')
   }
 
-  console.warn('No react component for ', component)
+  console.warn('No react component for', component)
   return null
 }
 
