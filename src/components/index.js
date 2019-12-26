@@ -22,6 +22,7 @@ function getComponentMatchForSpreadsheet (component, data) {
     case 'OrderPayment': return () => import('./OrderForm')
     case 'Contact': return () => import('./ContactForm')
     case 'ProductTabs': return () => import('./ProductTabs')
+    case 'ShoppingCart': return () => import('./ShoppingCart')
   }
 
   console.warn('No react component for', component)

@@ -4,7 +4,7 @@ import React from 'react'
 
 export default function ContactForm ({ description }) {
   return (
-    <Segment padded>
+    <Segment padded title={description}>
       <Form className='order-form'>
         <Form.Group widths='equal'>
           <Form.Input label='Name' type='text' />

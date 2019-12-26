@@ -4,7 +4,7 @@ import React from 'react'
 
 export default function OrderForm ({ description }) {
   return (
-    <Segment padded>
+    <Segment padded title={description}>
       <Form className='order-form'>
         <Form.Group widths='equal'>
           <Form.Input label='Card Number' type='number' />

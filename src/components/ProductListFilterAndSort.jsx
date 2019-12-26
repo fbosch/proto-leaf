@@ -21,9 +21,9 @@ const filterOptions = [
   { key: 2, text: 'Complementary', value: 'complementary' }
 ]
 
-export default function ProductListFilterAndSort (props) {
+export default function ProductListFilterAndSort ({ description }) {
   return (
-    <Segment.Group horizontal className='product-list-filter'>
+    <Segment.Group horizontal className='product-list-filter' title={description}>
       <Segment><Header as='h3' textAlign='center'>600 Products</Header></Segment>
       <Segment><Dropdown placeholder='Category' search selection clearable options={categoryOptions} /></Segment>
       <Segment><Dropdown placeholder='Sort by' search selection clearable options={sortOptions} /></Segment>

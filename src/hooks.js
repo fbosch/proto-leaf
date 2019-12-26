@@ -13,7 +13,7 @@ import { useLocation } from 'react-router-dom'
 
 // eslint-disable-next-line
 const worker = new Worker('./firebase.worker.js')
-const enableCaching = process.env.NODE_ENV === 'production'
+const enableCaching = true || process.env.NODE_ENV === 'production'
 console.assert(enableCaching, 'Caching is disabled')
 
 export function useAuthentication ({ client = 'Default' }) {
@@ -71,7 +71,14 @@ export function usePages ({ client = 'Default', leafs, enableCache = enableCachi
   useEffect(() => {
     if (authenticated === false) return
     const action = 'pages'
-    clientLeaf === 'Default' ? Cookies.remove('client') : Cookies.set('client', clientLeaf)
+    window.requestIdleCallback(() => {
+      if (clientLeaf === 'Default') {
+        Cookies.remove('client')
+        if (leafs) leafs.forEach(leaf => window.localStorage.removeItem(leaf.leaf))
+      } else {
+        Cookies.set('client', clientLeaf, { expires: 10 })
+      }
+    })
     function listenForPageChanges (event) {
       if (event.data.action === action) {
         if (previousValue.current !== event.data.value) {

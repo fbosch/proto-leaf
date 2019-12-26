@@ -89,7 +89,7 @@ export default function ProductTabs ({ description, headingTwo, richContent }) {
   ]
 
   return (
-    <Segment>
+    <Segment title={description}>
       <Header as='h2'>{headingTwo}</Header>
       {/* <RichTextContent richContent={richContent} /> */}
       <Tab panes={panes} />
