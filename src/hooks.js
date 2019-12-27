@@ -35,9 +35,11 @@ export function useAuthentication ({ client = 'Default' }) {
       if (event.data.action === 'authenticate') {
         const { id, leafs, failed } = event.data
         if (id) {
-          setClientLeafs(leafs.filter(isEmpty))
-          setLoginFailed(false)
-          setAuthenticated(true)
+          setClientLeafs(leafs)
+          window.requestAnimationFrame(() => {
+            setLoginFailed(false)
+            setAuthenticated(true)
+          })
           window.requestIdleCallback(() => {
             Cookies.set(clientIdentifier, true, { expires: 3 }) // 3 days
             window.localStorage.setItem('leafs', JSON.stringify(leafs))
@@ -84,7 +86,7 @@ export function usePages ({ client = 'Default', leafs, enableCache = enableCachi
           console.groupEnd('🔄 Pages Spreadsheet was synced')
         }
         previousValue.current = event.data.value
-        enableCache && window.requestIdleCallback(() => window.localStorage.setItem(client, event.data.value))
+        enableCache && window.requestIdleCallback(() => window.localStorage.setItem(clientLeaf, event.data.value))
       }
     }
     worker.addEventListener('message', listenForPageChanges)
