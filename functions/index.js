@@ -21,7 +21,7 @@ exports.authenticate = functions.https.onCall(data => {
             if (clientData.password === password) {
               values = values.map(clientItem => {
                 Object.keys(clientItem)
-                  .filter(key => !whitelist.includes(key))
+                  .filter(key => whitelist.includes(key))
                   .forEach(key => {
                     delete clientItem[key]
                   })

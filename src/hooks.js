@@ -70,7 +70,6 @@ export function usePages ({ client = 'Default', leafs, enableCache = enableCachi
     window.requestIdleCallback(() => {
       if (clientLeaf === 'Default') {
         Cookies.remove('client')
-        if (leafs) leafs.forEach(leaf => window.localStorage.removeItem(leaf.leaf))
       } else {
         Cookies.set('client', clientLeaf, { expires: 10 })
       }
