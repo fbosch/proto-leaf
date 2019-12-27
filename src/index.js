@@ -43,7 +43,6 @@ function App () {
       const password = window.prompt('Enter Password')
       authenticate(password)
     }
-    console.log(clientLeafs)
   }, [authenticated, authenticate])
 
   return (

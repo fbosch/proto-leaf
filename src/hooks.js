@@ -81,9 +81,9 @@ export function usePages ({ client = 'Default', leafs, enableCache = enableCachi
         if (previousValue.current !== event.data.value) {
           const newValue = JSON.parse(event.data.value)
           setPages(newValue)
-          console.groupCollapsed('🔄 Pages Spreadsheet was synced')
+          console.groupCollapsed(`🔄 Pages were synced with "${client}" spreadsheet`)
           console.table(newValue)
-          console.groupEnd('🔄 Pages Spreadsheet was synced')
+          console.groupEnd(`🔄 Pages were synced with "${client}" spreadsheet`)
         }
         previousValue.current = event.data.value
         enableCache && window.requestIdleCallback(() => window.localStorage.setItem(clientLeaf, event.data.value))
