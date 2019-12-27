@@ -27,11 +27,7 @@ export function useAuthentication ({ client = 'Default' }) {
   const [clientLeafs, setClientLeafs] = useState(cached ? JSON.parse(cached) : [])
   const [loginFailed, setLoginFailed] = useState(false)
 
-  const authenticate = useCallback(password => {
-    if (password) {
-      worker.postMessage({ action, client, password })
-    }
-  }, [client])
+  const authenticate = useCallback(password => worker.postMessage({ action, client, password }), [client])
 
   useEffect(() => {
     if (authenticated) return

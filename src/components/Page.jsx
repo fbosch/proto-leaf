@@ -4,7 +4,6 @@ import { useComponent, useCurrentPage } from '../hooks'
 import ComponentsContext from '../contexts/ComponentsContext'
 import { Container } from 'semantic-ui-react'
 import Helmet from 'react-helmet'
-import LoadingIndicator from './LoadingIndicator'
 import PageNotFound from './PageNotFound'
 import camelCase from 'lodash/camelCase'
 import classNames from 'classnames'
@@ -62,9 +61,7 @@ export default function Page ({ components, name }) {
   return (
     <>
       <Helmet title={name} />
-      <Suspense fallback={<LoadingIndicator />}>
-        {content}
-      </Suspense>
+      {content}
     </>
   )
 }

@@ -40,7 +40,8 @@ function App () {
 
   useEffect(() => {
     if (authenticated === false) {
-      authenticate(window.prompt('Enter Password'))
+      const password = window.prompt('Enter Password')
+      authenticate(password)
     }
   }, [authenticated, authenticate])
 
