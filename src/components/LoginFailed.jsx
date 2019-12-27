@@ -5,9 +5,9 @@ import React from 'react'
 
 export default function LoginFailed () {
   return (
-    <Segment className='page-not-found' color='red'>
+    <Segment className='page-not-found' color='yellow'>
       <Helmet title='Login Failed' />
-      <Header as='h2'><Icon name='dont' color='red' />Login Failed</Header>
+      <Header as='h2'><Icon name='lock' color='yellow' />Login Failed</Header>
     </Segment>
   )
 }
