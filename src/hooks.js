@@ -24,7 +24,7 @@ export function useAuthentication ({ client = 'Default' }) {
   const cachedAuthentication = Boolean(Cookies.get(clientIdentifier))
 
   const [authenticated, setAuthenticated] = useState(client === 'Default' || cachedAuthentication)
-  const [leaf, setLeaf] = useState(cached ? JSON.parse(cached) : {})
+  const [clientLeaf, setClientLeaf] = useState(cached ? JSON.parse(cached) : {})
   const [loginFailed, setLoginFailed] = useState(false)
 
   const authenticate = useCallback(password => worker.postMessage({ action, client, password }), [client])
@@ -35,7 +35,7 @@ export function useAuthentication ({ client = 'Default' }) {
       if (event.data.action === 'authenticate') {
         const { id, leaf, name, failed } = event.data
         if (id) {
-          setLeaf({ id, leaf, name })
+          setClientLeaf({ id, leaf, name })
           setLoginFailed(false)
           setAuthenticated(true)
           window.requestIdleCallback(() => {
@@ -52,12 +52,12 @@ export function useAuthentication ({ client = 'Default' }) {
     return () => worker.removeEventListener('message', authenticationListener)
   }, [client, authenticated])
 
-  return { authenticated, authenticate, leaf, loginFailed }
+  return { authenticated, authenticate, clientLeaf, loginFailed }
 }
 
 export function usePages ({ client = 'Default', enableCache = enableCaching } = {}) {
-  const { authenticated, leaf } = useContext(AuthenticationContext)
-  const clientLeaf = leaf ? leaf.leaf : client
+  const { authenticated, clientLeaf } = useContext(AuthenticationContext)
+  const leaf = clientLeaf?.leaf?.toLowerCase() === client?.toLowerCase() ? clientLeaf.leaf : client
   const cached = window.localStorage.getItem(clientLeaf)
   const useCache = enableCache && cached
   const initialValue = useCache ? JSON.parse(cached) : []
@@ -70,8 +70,9 @@ export function usePages ({ client = 'Default', enableCache = enableCaching } = 
     window.requestIdleCallback(() => {
       if (clientLeaf === 'Default') {
         Cookies.remove('client')
+        window.localStorage.removeItem('leaf')
       } else {
-        Cookies.set('client', clientLeaf, { expires: 10 })
+        Cookies.set('client', leaf, { expires: 10 })
       }
     })
     function listenForPageChanges (event) {
@@ -79,18 +80,18 @@ export function usePages ({ client = 'Default', enableCache = enableCaching } = 
         if (previousValue.current !== event.data.value) {
           const newValue = JSON.parse(event.data.value)
           setPages(newValue)
-          console.groupCollapsed(`🔄 Pages were synced with "${client}" spreadsheet`)
+          console.groupCollapsed(`🔄 Pages were synced with "${leaf}" spreadsheet`)
           console.table(newValue)
-          console.groupEnd(`🔄 Pages were synced with "${client}" spreadsheet`)
+          console.groupEnd(`🔄 Pages were synced with "${leaf}" spreadsheet`)
         }
         previousValue.current = event.data.value
-        enableCache && window.requestIdleCallback(() => window.localStorage.setItem(clientLeaf, event.data.value))
+        enableCache && window.requestIdleCallback(() => window.localStorage.setItem(leaf, event.data.value))
       }
     }
     worker.addEventListener('message', listenForPageChanges)
-    worker.postMessage({ action, client: clientLeaf, cache: useCache ? cached : null })
+    worker.postMessage({ action, client: leaf, cache: useCache ? cached : null })
     return () => worker.removeEventListener('message', listenForPageChanges)
-  }, [previousValue, authenticated, clientLeaf])
+  }, [previousValue, authenticated, leaf])
 
   return pages
 }
