@@ -18,13 +18,13 @@ console.assert(enableCaching, 'Caching is disabled')
 
 export function useAuthentication ({ client = 'Default' }) {
   const action = 'authenticate'
-  const cached = window.localStorage.getItem('leafs')
+  const cached = window.localStorage.getItem('leaf')
 
   const clientIdentifier = md5(client + '🍃')
   const cachedAuthentication = Boolean(Cookies.get(clientIdentifier))
 
   const [authenticated, setAuthenticated] = useState(client === 'Default' || cachedAuthentication)
-  const [clientLeafs, setClientLeafs] = useState(cached ? JSON.parse(cached) : [])
+  const [leaf, setLeaf] = useState(cached ? JSON.parse(cached) : {})
   const [loginFailed, setLoginFailed] = useState(false)
 
   const authenticate = useCallback(password => worker.postMessage({ action, client, password }), [client])
@@ -33,16 +33,14 @@ export function useAuthentication ({ client = 'Default' }) {
     if (authenticated) return
     function authenticationListener (event) {
       if (event.data.action === 'authenticate') {
-        const { id, leafs, failed } = event.data
+        const { id, leaf, name, failed } = event.data
         if (id) {
-          setClientLeafs(leafs)
-          window.requestAnimationFrame(() => {
-            setLoginFailed(false)
-            setAuthenticated(true)
-          })
+          setLeaf({ id, leaf, name })
+          setLoginFailed(false)
+          setAuthenticated(true)
           window.requestIdleCallback(() => {
             Cookies.set(clientIdentifier, true, { expires: 3 }) // 3 days
-            window.localStorage.setItem('leafs', JSON.stringify(leafs))
+            window.localStorage.setItem('leaf', JSON.stringify({ id, leaf, name }))
           })
         } else {
           if (failed) setLoginFailed(true)
@@ -54,12 +52,12 @@ export function useAuthentication ({ client = 'Default' }) {
     return () => worker.removeEventListener('message', authenticationListener)
   }, [client, authenticated])
 
-  return { authenticated, authenticate, clientLeafs, loginFailed }
+  return { authenticated, authenticate, leaf, loginFailed }
 }
 
-export function usePages ({ client = 'Default', leafs, enableCache = enableCaching } = {}) {
-  const authenticated = useContext(AuthenticationContext)
-  const clientLeaf = leafs?.find(leaf => leaf?.leaf?.toLowerCase() === client.toLowerCase())?.leaf || client
+export function usePages ({ client = 'Default', enableCache = enableCaching } = {}) {
+  const { authenticated, leaf } = useContext(AuthenticationContext)
+  const clientLeaf = leaf ? leaf.leaf : client
   const cached = window.localStorage.getItem(clientLeaf)
   const useCache = enableCache && cached
   const initialValue = useCache ? JSON.parse(cached) : []
@@ -112,7 +110,7 @@ export function useCurrentPage () {
 // subscribe to the list of spreadsheet components
 export function useComponents ({ enableCache = enableCaching } = {}) {
   const action = 'components'
-  const authenticated = useContext(AuthenticationContext)
+  const { authenticated } = useContext(AuthenticationContext)
   const cached = window.localStorage.getItem(action)
   const useCache = enableCache && cached
   const initialValue = useCache ? JSON.parse(cached) : []

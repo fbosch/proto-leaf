@@ -36,7 +36,8 @@ ReactDOM.render(<App />, document.getElementById('root'))
 
 function App () {
   const client = getClient()
-  const { authenticated, authenticate, clientLeafs, loginFailed } = useAuthentication({ client })
+  const authentication = useAuthentication({ client })
+  const { authenticated, authenticate, loginFailed } = authentication
 
   useEffect(() => {
     if (authenticated === false) {
@@ -46,8 +47,8 @@ function App () {
   }, [authenticated, authenticate])
 
   return (
-    <AuthenticationProvider value={authenticated}>
-      {loginFailed ? <LoginFailed /> : (authenticated && <PageContents client={client} leafs={clientLeafs} />)}
+    <AuthenticationProvider value={authentication}>
+      {loginFailed ? <LoginFailed /> : (authenticated && <PageContents client={client} />)}
     </AuthenticationProvider>
   )
 }

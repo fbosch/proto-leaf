@@ -27,12 +27,12 @@ exports.authenticate = functions.https.onCall(data => {
                   })
                 return clientItem
               })
-              resolve({ ...clientData, leafs: values })
+              resolve(clientData)
             } else {
               resolve(null)
             }
           } else {
-            resolve({ ...clientData, leafs: values })
+            resolve(clientData)
           }
         }
         resolve(null)
