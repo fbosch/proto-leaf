@@ -42,11 +42,11 @@
     }
   },
   "devDependencies": {
-    "@babel/core": "^7.7.7",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.7.4",
-    "@babel/plugin-proposal-optional-chaining": "^7.7.5",
-    "@babel/preset-env": "^7.7.7",
-    "@babel/preset-react": "^7.7.4",
+    "@babel/core": "^7.8.3",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.8.3",
+    "@babel/plugin-proposal-optional-chaining": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@babel/preset-react": "^7.8.3",
     "@svgr/parcel-plugin-svgr": "^5.0.1",
     "babel-eslint": "^10.0.3",
     "babel-plugin-lodash": "^3.3.4",
@@ -58,7 +58,7 @@
     "parcel-plugin-bundle-visualiser": "^1.2.0",
     "parcel-plugin-sw-cache": "^0.3.1",
     "rimraf": "^3.0.0",
-    "sass": "^1.24.0",
+    "sass": "^1.24.4",
     "standard": "^14.3.1"
   },
   "dependencies": {
@@ -73,7 +73,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-helmet": "^5.2.1",
-    "react-lite-youtube-embed": "^0.2.0",
+    "react-lite-youtube-embed": "^0.2.32",
     "react-router-dom": "^5.1.2",
     "react-router-scroll-memory": "^2.0.5",
     "semantic-ui-react": "^0.88.2"
