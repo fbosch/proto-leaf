@@ -30,14 +30,14 @@ steps:
     targetType: 'inline'
     script: |
       param(
-      [string]$firebase-token,
-      [string]$firebase-project
+      [string]$FIREBASE_TOKEN,
+      [string]$FIREBASE_PROJECT
       )
       npm i -g firebase-tools;
       write-host "starting deploy...";
       firebase --version;
-      write-host $firebase-token;
-      write-host $firebase-project;
-      firebase deploy --token $firebase-token --project default --debug;
+      write-host $FIREBASE_TOKEN;
+      write-host $FIREBASE_TOKEN;
+      firebase deploy --token $FIREBASE_TOKEN --project default --debug;
       write-host "deployment completed";
       Pop-Location
