@@ -9,6 +9,9 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  group: firebase
+
 steps:
 - task: NodeTool@0
   inputs:
@@ -20,7 +23,7 @@ steps:
     projectDirectory: './'
     arguments: 'install'
 - task: Npm@1
-  displayName: 'install firebase functions'
+  displayName: 'Install Firebase Functions'
   inputs:
     command: 'install'
     workingDir: './functions'
@@ -28,6 +31,7 @@ steps:
 - script: |
     yarn run build
   displayName: 'Parcel Build'
+
 - task: PowerShell@2
   displayName: 'Deploy to Firebase'
   inputs:
