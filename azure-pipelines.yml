@@ -26,13 +26,15 @@ steps:
   displayName: 'yarn install and build'
 
 - task: PowerShell@2
+  displayName: 'Deploy to Firebase'
   inputs:
     targetType: 'inline'
     script: |
       npm i -g firebase-tools
       write-host "starting deploy...";
       firebase --version;
-      firebase deploy --token $fireBaseToken --project $fireBaseProject --message "Release: $releaseMessage";
+      firebase use --add $fireBaseProject;
+      firebase deploy --token $fireBaseToken --message "Release: $releaseMessage";
       write-host "deployment completed";
       
       Pop-Location
