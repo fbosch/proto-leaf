@@ -7,7 +7,7 @@ trigger:
 - master
 
 variables:
-- group: Firebase
+- group: firebase
 
 pool:
   vmImage: 'ubuntu-latest'
