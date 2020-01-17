@@ -33,7 +33,7 @@ steps:
       write-host "starting deploy...";
       firebase --version;
       firebase use --token $fireBaseToken --add $fireBaseProject;
-      firebase deploy --message "Release: $releaseMessage";
+      firebase deploy --token $fireBaseToken --message "Release: $releaseMessage";
       write-host "deployment completed";
       
       Pop-Location
