@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 steps:
 - task: NodeTool@0
@@ -32,7 +32,7 @@ steps:
       npm i -g firebase-tools
       write-host "starting deploy...";
       firebase --version;
-      firebase use --token $firebase-token --add $firebase-project; 
-      sudo firebase deploy --non-interactive --project $firebase-project --token $firebase-token;
+      firebase use --token $firebase-token $firebase-project; 
+      firebase deploy --non-interactive --token $firebase-token;
       write-host "deployment completed";
       Pop-Location
