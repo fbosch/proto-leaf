@@ -34,7 +34,7 @@ steps:
       firebase --version;
       firebase login --token $fireBaseToken;
       firebase use --token $fireBaseToken --add $fireBaseProject;
-      firebase deploy --token $fireBaseToken --message "Release: $releaseMessage";
+      firebase deploy --message "Release: $releaseMessage" --token $fireBaseToken;
       write-host "deployment completed";
       
       Pop-Location
