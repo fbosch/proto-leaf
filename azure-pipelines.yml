@@ -29,10 +29,6 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      param(
-      [string]$FIREBASE_TOKEN,
-      [string]$FIREBASE_PROJECT
-      )
       npm i -g firebase-tools;
       write-host "starting deploy...";
       firebase --version;
