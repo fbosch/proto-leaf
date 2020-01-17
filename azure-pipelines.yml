@@ -33,7 +33,8 @@ steps:
       write-host "starting deploy...";
       firebase --version;
       write-host $FIREBASE_TOKEN;
-      write-host $FIREBASE_TOKEN;
-      firebase deploy --token $FIREBASE_TOKEN --project default --debug;
+      write-host $FIREBASE_PROJECT;
+      firebase use --token $FIREBASE_TOKEN default;
+      firebase deploy --token $FIREBASE_TOKEN --debug;
       write-host "deployment completed";
       Pop-Location
