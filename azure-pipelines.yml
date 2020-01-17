@@ -21,9 +21,8 @@ steps:
     arguments: 'install'
 
 - script: |
-    yarn install
     yarn run build
-  displayName: 'yarn install and build'
+  displayName: 'Parcel Build'
 
 - task: PowerShell@2
   displayName: 'Deploy to Firebase'
@@ -33,7 +32,7 @@ steps:
       npm i -g firebase-tools
       write-host "starting deploy...";
       firebase --version;
-      firebase use --add $fireBaseProject;
+      firebase use --add $fireBaseProject --token $fireBaseToken;
       firebase deploy --token $fireBaseToken --message "Release: $releaseMessage";
       write-host "deployment completed";
       
