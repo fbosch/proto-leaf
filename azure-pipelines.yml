@@ -29,11 +29,6 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      param(
-          [string]$fireBaseToken,
-          [string]$fireBaseProject,
-          [string]$releaseMessage
-      )
       $dir = Split-Path $MyInvocation.MyCommand.Path
       Push-Location $dir
       
