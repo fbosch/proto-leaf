@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "protoleaf-6fbe1"
+    "default": "protoleaf-6fbe1",
+    "production": "protoleaf-6fbe1"
   }
 }

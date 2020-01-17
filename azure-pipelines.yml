@@ -34,5 +34,4 @@ steps:
       firebase --version;
       firebase deploy --token $firebase-token;
       write-host "deployment completed";
-      
       Pop-Location
