@@ -19,11 +19,15 @@ steps:
   inputs:
     projectDirectory: './'
     arguments: 'install'
+- task: Npm@1
+  displayName: 'install firebase functions'
+  inputs:
+    command: 'install'
+    workingDir: './functions'
 
 - script: |
     yarn run build
   displayName: 'Parcel Build'
-
 - task: PowerShell@2
   displayName: 'Deploy to Firebase'
   inputs:
@@ -32,9 +36,7 @@ steps:
       npm i -g firebase-tools;
       write-host "starting deploy...";
       firebase --version;
-      write-host $(FIREBASE_TOKEN);
-      write-host $(FIREBASE_PROJECT);
       firebase use --token $(FIREBASE_TOKEN) --add $(FIREBASE_PROJECT);
-      firebase deploy --token $(FIREBASE_TOKEN) --debug;
+      firebase deploy --token $(FIREBASE_TOKEN);
       write-host "deployment completed";
       Pop-Location
