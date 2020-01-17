@@ -32,8 +32,7 @@ steps:
       npm i -g firebase-tools
       write-host "starting deploy...";
       firebase --version;
-      firebase --token $fireBaseToken use --add $fireBaseProject;
-      firebase --token $fireBaseToken deploy --message "Release: $releaseMessage";
+      firebase deploy --token $(firebase-token) --project $(firebase-project);
       write-host "deployment completed";
       
       Pop-Location
