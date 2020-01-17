@@ -32,6 +32,7 @@ steps:
       npm i -g firebase-tools
       write-host "starting deploy...";
       firebase --version;
+      firebase login --token $fireBaseToken;
       firebase use --token $fireBaseToken --add $fireBaseProject;
       firebase deploy --token $fireBaseToken --message "Release: $releaseMessage";
       write-host "deployment completed";
