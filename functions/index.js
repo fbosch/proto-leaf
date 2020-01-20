@@ -13,22 +13,21 @@ exports.authenticate = functions.https.onCall(data => {
     function handleAuthentication (snapshot) {
       const value = snapshot.val()
       if (value) {
-        let values = value.filter(Boolean)
+        const values = value.filter(Boolean).map(clientItem => {
+          const hasExternalSpreadsheet = clientItem.spreadsheet.length > 0
+          const hasExternalComponents = clientItem.components.length > 0
+          Object.keys(clientItem)
+            .filter(key => !whitelist.includes(key))
+            .forEach(key => {
+              delete clientItem[key]
+            })
+          return { ...clientItem, hasExternalSpreadsheet, hasExternalComponents }
+        })
         const clientData = values.find(clientItem => clientItem && clientItem.leaf && clientItem.leaf.toLowerCase() === client.toLowerCase())
         if (clientData) {
           // remove blacklisted keys to prevent them from getting sent to the client (such as passwords)
           if (clientData.password) {
             if (clientData.password === password) {
-              values = values.map(clientItem => {
-                const hasExternalSpreadsheet = clientItem.spreadsheet.length > 0
-                const hasExternalComponents = clientItem.components.length > 0
-                Object.keys(clientItem)
-                  .filter(key => !whitelist.includes(key))
-                  .forEach(key => {
-                    delete clientItem[key]
-                  })
-                return { ...clientItem, hasExternalSpreadsheet, hasExternalComponents }
-              })
               resolve(clientData)
             } else {
               resolve(null)

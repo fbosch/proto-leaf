@@ -33,14 +33,15 @@ export function useAuthentication ({ client = 'Default' }) {
     if (authenticated) return
     function authenticationListener (event) {
       if (event.data.action === 'authenticate') {
-        const { id, leaf, name, failed } = event.data
+        const { id, leaf, name, hasExternalComponents, failed } = event.data
         if (id) {
-          setClientLeaf({ id, leaf, name })
+          const clientLeaf = { id, leaf, name, components: hasExternalComponents ? leaf + '@Components' : null }
+          setClientLeaf(clientLeaf)
           setLoginFailed(false)
           setAuthenticated(true)
           window.requestIdleCallback(() => {
             Cookies.set(clientIdentifier, true, { expires: 3 }) // 3 days
-            window.localStorage.setItem('leaf', JSON.stringify({ id, leaf, name }))
+            window.localStorage.setItem('leaf', JSON.stringify(clientLeaf))
           })
         } else {
           if (failed) setLoginFailed(true)
@@ -111,9 +112,10 @@ export function useCurrentPage () {
 // subscribe to the list of spreadsheet components
 export function useComponents ({ enableCache = enableCaching } = {}) {
   const action = 'components'
-  const { authenticated } = useContext(AuthenticationContext)
+  const { authenticated, clientLeaf } = useContext(AuthenticationContext)
   const cached = window.localStorage.getItem(action)
   const useCache = enableCache && cached
+  const externalComponents = clientLeaf.components
   const initialValue = useCache ? JSON.parse(cached) : []
   const [components, setComponents] = useState(initialValue)
   const previousValue = useRef(useCache)
@@ -134,7 +136,7 @@ export function useComponents ({ enableCache = enableCaching } = {}) {
       }
     }
     worker.addEventListener('message', listenForComponentChanges)
-    worker.postMessage({ action, cache: useCache ? cached : null })
+    worker.postMessage({ action, cache: useCache ? cached : null, externalComponents })
     return () => worker.removeEventListener('message', listenForComponentChanges)
   }, [previousValue, authenticated])
 

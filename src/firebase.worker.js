@@ -85,12 +85,11 @@ function formatComponents (components) {
   }), {}))
 }
 
-function subscribeToComponents ({ cache }) {
-  console.info('✔️ Subscribed to "Components" spreadsheet')
+function subscribeToComponents ({ cache, externalComponents }) {
+  console.info(`✔️ Subscribed to "${externalComponents ?? 'Components'}" spreadsheet`)
   let initialized = false
   const format = memoize(formatComponents)
-
-  const componentsRef = self.database.ref(`/${mainSheet}/Components`)
+  const componentsRef = self.database.ref(`/${mainSheet}/${externalComponents ?? 'Components'}`)
   componentsRef.on('value', snapshot => {
     const components = snapshot.val()
     if (!components) {
