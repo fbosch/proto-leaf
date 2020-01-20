@@ -26,8 +26,8 @@ export default function Page ({ components, name }) {
   const componentsData = useContext(ComponentsContext)
   const getComponent = useComponent({ name }) // page data passed to components
   const isOnHomepage = useMemo(() => location.pathname === '/', [location])
-  const editorialComponentRows = useMemo(() => components.filter(row => isEditorial(row, componentsData)), [components, componentsData])
-  const layoutComponentRows = useMemo(() => components.filter(row => !isEditorial(row, componentsData)), [components, componentsData])
+  const editorialComponentRows = useMemo(() => components?.filter(row => isEditorial(row, componentsData)), [components, componentsData])
+  const layoutComponentRows = useMemo(() => components?.filter(row => !isEditorial(row, componentsData)), [components, componentsData])
 
   // Remove global header and footer from content (managed by Layout)
   const layoutComponentsWithoutMenuAndFooter = useMemo(() => layoutComponentRows
