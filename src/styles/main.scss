@@ -19,6 +19,18 @@
 	}
 }
 
+.meta-toggler {
+	position: fixed;
+	top: 29px;
+	right: 30px;
+	z-index: 99;
+	opacity: 0.2;
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
 .global-menu {
 	grid-area: head;
 	max-width: $menu-max-width;

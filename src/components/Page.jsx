@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useMemo } from 'react'
+import React, { Suspense, lazy, useContext, useMemo } from 'react'
 import { useComponent, useCurrentPage } from '../hooks'
 
 import ComponentsContext from '../contexts/ComponentsContext'
@@ -17,6 +17,8 @@ function isEditorial (row, data) {
   if (some(componentsData, ({ type }) => camelCase(type) === 'layoutManaged')) return false
   return true
 }
+
+const Sidebar = lazy(() => import('./PageMetaSidebar'))
 
 export default function Page ({ components, name }) {
   const location = useLocation()
@@ -61,6 +63,9 @@ export default function Page ({ components, name }) {
   return (
     <>
       <Helmet title={name} />
+      <Suspense fallback=''>
+        {currentPage.metaData && <Sidebar page={currentPage} />}
+      </Suspense>
       {content}
     </>
   )
