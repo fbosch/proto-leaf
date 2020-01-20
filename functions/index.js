@@ -20,12 +20,14 @@ exports.authenticate = functions.https.onCall(data => {
           if (clientData.password) {
             if (clientData.password === password) {
               values = values.map(clientItem => {
+                const hasExternalSpreadsheet = clientItem.spreadsheet.length > 0
+                const hasExternalComponents = clientItem.components.length > 0
                 Object.keys(clientItem)
                   .filter(key => !whitelist.includes(key))
                   .forEach(key => {
                     delete clientItem[key]
                   })
-                return clientItem
+                return { ...clientItem, hasExternalSpreadsheet, hasExternalComponents }
               })
               resolve(clientData)
             } else {

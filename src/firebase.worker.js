@@ -47,6 +47,7 @@ function authenticate ({ client, password, spreadsheet = mainSheet }) {
   auth({ client, password, spreadsheet })
     .then(result => {
       if (result?.data) {
+        console.log(result.data)
         console.info('🔓 Authenticated')
         self.postMessage({ action, ...result.data })
       } else {

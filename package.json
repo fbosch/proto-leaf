@@ -58,7 +58,7 @@
     "parcel-plugin-bundle-visualiser": "^1.2.0",
     "parcel-plugin-sw-cache": "^0.3.1",
     "rimraf": "^3.0.0",
-    "sass": "^1.24.4",
+    "sass": "^1.25.0",
     "standard": "^14.3.1"
   },
   "dependencies": {
@@ -69,7 +69,7 @@
     "lodash": "^4.17.15",
     "md5": "^2.2.1",
     "modern-normalize": "^0.6.0",
-    "query-string": "^6.9.0",
+    "query-string": "^6.10.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-helmet": "^5.2.1",
