@@ -60,7 +60,7 @@ export default function GlobalMenu () {
   }, [subMenuLinks, currentPage, isActive])
 
   return (
-    <nav className='global-menu' key='global-menu' style={{ height: (activeLevels ? 50 + (50 * activeLevels) : 50) + 'px' }}>
+    <nav className='global-menu' key='global-menu' style={{ height: (activeLevels ? 50 + (50 * activeLevels) : 50) + 'px' }} data-component='global menu'>
       <Menu>
         <Menu.Item><Link to='/' title='front page'><Icon name='home' /></Link></Menu.Item>
         {topLevelLinks.map(link => [

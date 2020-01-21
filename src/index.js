@@ -1,3 +1,4 @@
+import 'toastify-js/src/toastify.css'
 import './styles/main.scss'
 
 import React, { useEffect } from 'react'
@@ -7,6 +8,7 @@ import Cookies from 'js-cookie'
 import LoginFailed from './components/LoginFailed'
 import PageContents from './components/PageContents'
 import ReactDOM from 'react-dom'
+import Toastify from 'toastify-js'
 import queryString from 'query-string'
 import startCase from 'lodash/startCase'
 import { useAuthentication } from './hooks'
@@ -38,6 +40,30 @@ function App () {
   const client = getClient()
   const authentication = useAuthentication({ client })
   const { authenticated, authenticate, loginFailed } = authentication
+
+  useEffect(() => {
+    const copyComponentOnClick = event => {
+      if (event.altKey) {
+        const closestComponent = event.target.closest('[data-component]')
+        if (closestComponent) {
+          const componentName = closestComponent.getAttribute('data-component')
+          if (componentName) {
+            event.preventDefault()
+            navigator.clipboard.writeText(componentName).then(() => {
+              console.log(componentName, 'copied to clipboard!')
+              Toastify({
+                backgroundColor: 'white',
+                gravity: 'top',
+                text: '📋 Component name copied to clipboard!'
+              }).showToast()
+            })
+          }
+        }
+      }
+    }
+    document.addEventListener('click', copyComponentOnClick)
+    return () => document.removeEventListener('click', copyComponentOnClick)
+  })
 
   useEffect(() => {
     if (authenticated === false) {

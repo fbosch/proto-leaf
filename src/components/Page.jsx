@@ -8,6 +8,7 @@ import PageNotFound from './PageNotFound'
 import camelCase from 'lodash/camelCase'
 import classNames from 'classnames'
 import isArray from 'lodash/isArray'
+import isEmpty from 'lodash/isEmpty'
 import some from 'lodash/_arraySome'
 import { useLocation } from 'react-router'
 
@@ -26,22 +27,22 @@ export default function Page ({ components, name }) {
   const componentsData = useContext(ComponentsContext)
   const getComponent = useComponent({ name }) // page data passed to components
   const isOnHomepage = useMemo(() => location.pathname === '/', [location])
-  const editorialComponentRows = useMemo(() => components?.filter(row => isEditorial(row, componentsData)), [components, componentsData])
-  const layoutComponentRows = useMemo(() => components?.filter(row => !isEditorial(row, componentsData)), [components, componentsData])
+  const editorialComponentRows = useMemo(() => isEmpty(components) ? [] : components?.filter(row => isEditorial(row, componentsData)), [components, componentsData])
+  const layoutComponentRows = useMemo(() => isEmpty(components) ? [] : components?.filter(row => !isEditorial(row, componentsData)), [components, componentsData])
 
   // Remove global header and footer from content (managed by Layout)
-  const layoutComponentsWithoutMenuAndFooter = useMemo(() => layoutComponentRows
+  const layoutComponentsWithoutMenuAndFooter = useMemo(() => isEmpty(layoutComponentRows) ? [] : layoutComponentRows
     .filter(row => !row.includes('footer'))
     .filter(row => !row.includes('globalMenu'))
     .map(row => row.map(getComponent)), [layoutComponentRows])
 
   const renderedComponents = useMemo(() =>
-    editorialComponentRows.map((row, index) => (
+    isEmpty(editorialComponentRows) ? [] : editorialComponentRows.map((row, index) => (
       <div className='row' key={index}>
         {row.map((component, index) => {
           const value = getComponent(component)
           const flexGrow = component.endsWith('+') ? component.match(/\+/g).length + 1 : null
-          return <div className={classNames('col', { 'is-empty': !value })} style={{ flexGrow }} key={index} children={value} />
+          return <div className={classNames('col', { 'is-empty': !value })} style={{ flexGrow }} data-component={value.props.component} key={index} children={value} />
         }
         )}
       </div>
@@ -52,7 +53,7 @@ export default function Page ({ components, name }) {
     <main key='main'>
       <Container>
         <Suspense fallback=''>
-          {renderedComponents}
+          {renderedComponents || null}
         </Suspense>
       </Container>
     </main>

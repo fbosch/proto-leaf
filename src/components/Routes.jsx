@@ -39,12 +39,12 @@ export default function Routes ({ pages }) {
 
 function pageHasGlobalMenu (page) {
   if (!page) return false
-  const allComponents = page.components.flatMap(components => components)
+  const allComponents = isEmpty(page.components) ? [] : page.components.flatMap(components => components)
   return Boolean(allComponents.find(component => component === 'globalMenu'))
 }
 
 function pageHasFooter (page) {
   if (!page) return false
-  const allComponents = page.components.flatMap(components => components)
+  const allComponents = isEmpty(page.components) ? [] : page.components.flatMap(components => components)
   return Boolean(allComponents.find(component => component === 'footer'))
 }
