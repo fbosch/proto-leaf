@@ -50,7 +50,7 @@ function App () {
           if (componentName) {
             event.preventDefault()
             navigator.clipboard.writeText(componentName).then(() => {
-              console.log(componentName, 'copied to clipboard!')
+              console.log(componentName, 'copied to clipboard! 📋')
               Toastify({
                 backgroundColor: 'white',
                 gravity: 'top',

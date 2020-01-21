@@ -42,7 +42,7 @@ export default function Page ({ components, name }) {
         {row.map((component, index) => {
           const value = getComponent(component)
           const flexGrow = component.endsWith('+') ? component.match(/\+/g).length + 1 : null
-          return <div className={classNames('col', { 'is-empty': !value })} style={{ flexGrow }} data-component={value.props.component} key={index} children={value} />
+          return <div className={classNames('col', { 'is-empty': !value })} style={{ flexGrow }} data-component={value?.props?.component} key={index} children={value} />
         }
         )}
       </div>
