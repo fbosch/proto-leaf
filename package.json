@@ -66,7 +66,7 @@
     "dompurify": "^2.0.7",
     "get-youtube-id": "^1.0.1",
     "js-cookie": "^2.2.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "md5": "^2.2.1",
     "modern-normalize": "^0.6.0",
     "query-string": "^6.10.1",
